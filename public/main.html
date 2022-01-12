@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TonyWeb</title>
+</head>
+
+<body style="margin: 0px; background-color: #111122;">
+    <div style="margin-left: 10%; margin-right: 10%; height: 100%; background-color: #000011;">
+        <script src="./main.js"></script>
+        <iframe id="frmFile" src="test.txt" style="display: none;"></iframe>
+
+        <div style="height:50px; width: 100%; padding-top: 100px">
+            <input id="input" size='    ' maxlength='60' type="text"
+                style="height: 90%; width: 78%; font-size: 20pt; float: left;" onkeypress="if( event.keyCode == 13 ){search();}" >
+            <button id="search" style="height: 100%;width: 18%;float: right;" ; onclick="search()"> search </button>
+        </div>
+        <p id="output" style="color: whitesmoke;font-size: 16pt; background-color: #000011;">
+            • Lorem<br>
+            • ipsum<br>
+            • dolor<br>
+            • sit<br>
+            • amet<br>
+            • consectetur<br>
+            • adipisicing<br>
+            • elit.</p>
+
+    </div>
+
+</body>
+
+</html>
