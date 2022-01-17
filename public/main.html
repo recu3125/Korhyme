@@ -10,15 +10,16 @@
 
 <body style="margin: 0px; background-color: #111122;">
     <div style="margin-left: 10%; margin-right: 10%; height: 100%; background-color: #000011;">
+        <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
         <script src="./main.js"></script>
-        <iframe id="frmFile" src="test.txt" style="display: none;"></iframe>
+        <iframe id="frmFile" src="korean.txt" style="display: none;"></iframe>
 
         <div style="height:50px; width: 100%; padding-top: 100px">
             <input id="input" size='    ' maxlength='60' type="text"
-                style="height: 90%; width: 78%; font-size: 20pt; float: left;" onkeypress="if( event.keyCode == 13 ){search();}" >
-            <button id="search" style="height: 100%;width: 18%;float: right;" ; onclick="search()"> search </button>
+                style="height: 90%; width: 78%; font-size: 20pt; float: left;" onkeypress="if( event.keyCode == 13 ){buttonclick();}" >
+            <button id="search" style="height: 100%;width: 18%;float: right;" ; onclick="buttonclick()"> search </button>
         </div>
-        <p id="output" style="color: whitesmoke;font-size: 16pt; background-color: #000011;">
+        <p id="output" style="color: whitesmoke;font-size: 10pt; background-color: #000011;">
             • Lorem<br>
             • ipsum<br>
             • dolor<br>
