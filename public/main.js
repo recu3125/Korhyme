@@ -121,7 +121,7 @@ function search(keyword) {
 }
 function relevance0(a, b) {
     if (a == b) return 3;
-    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ']
+    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ','ㄴㅁ','ㅇㅎ']
     if (arebothin(a, b, similar)) return 2;
     else return 0;
 }
