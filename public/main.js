@@ -1,23 +1,31 @@
-const res = require("express/lib/response");
-
 function buttonclick() {
     var input = document.getElementById("input").value
     if (input.length <= 1) {
         alert('1글자 이하로는 검색하실 수 없습니다!')
         return 0;
     }
-    input = input.replace(/[^가-힣]/, '')
-    //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
+    input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
     var tosearch = possiblepron(input)
-    for (i of tosearch) {
+    for (var i of tosearch) {
         if (i == tosearch[0])
             var scores = search(tosearch[0])
-        scores = scores.map(function (num, idx) {
-            return num + search(tosearch)[idx];
-        });
+        else
+        {
+            var serres=search(tosearch[0])
+            for(i in scores)
+                scores[i]+=serres[i]
+        }
     }
-    var willsearch = tosearch.join('<br>')
-    document.getElementById('output').innerHTML = willsearch + '들의 단어로 검색한 결과를 출력합니다'
+    let result = Object.entries(scores).sort((a,b) => a[1]-b[1]).map(e => +e[0]).reverse()
+    let output =''
+    let words = getFile()
+    for(var i=0;i<100;i++)
+    {
+        var word =(''+words[result[i]]).replace(/[ \tE]/g,'')
+        word= Hangul.assemble(word)
+        output=output+ word +'                score:'+scores[result[i]]+'<br>'
+    }
+    document.getElementById('output').innerHTML= output
 }
 
 function possiblepron(input) {
@@ -34,9 +42,20 @@ function possiblepron(input) {
     disassemed = disassemed.replace(/ㅜ ㅔ/g, 'ㅞ')
     disassemed = disassemed.replace(/ㅜ ㅣ/g, 'ㅟ')
     disassemed = disassemed.replace(/ㅡ ㅣ/g, 'ㅢ')
+    disassemed = disassemed.replace(/ㄱ ㅅ/g, 'ㄳ')
+    disassemed = disassemed.replace(/ㄴ ㅈ/g, 'ㄵ')
+    disassemed = disassemed.replace(/ㄴ ㅎ/g, 'ㄶ')
+    disassemed = disassemed.replace(/ㄹ ㄱ/g, 'ㄺ')
+    disassemed = disassemed.replace(/ㄹ ㅁ/g, 'ㄻ')
+    disassemed = disassemed.replace(/ㄹ ㅂ/g, 'ㄼ')
+    disassemed = disassemed.replace(/ㄹ ㅅ/g, 'ㄽ')
+    disassemed = disassemed.replace(/ㄹ ㅌ/g, 'ㄾ')
+    disassemed = disassemed.replace(/ㄹ ㅍ/g, 'ㄿ')
+    disassemed = disassemed.replace(/ㄹ ㅎ/g, 'ㅀ')
+    disassemed = disassemed.replace(/ㅂ ㅅ/g, 'ㅄ')
     disassemed = disassemed.split('\t')
     //ㄱ ㅘ 	 ㄴ ㅘ ㄱ 	 ㄷ ㅏ ㄹ
-    for (i in disassemed) {
+    for (var i in disassemed) {
         disassemed[i] = disassemed[i].trim()
         if (disassemed[i].length == 3) {
             disassemed[i] = disassemed[i] + ' E'
@@ -74,11 +93,73 @@ function pronrecursive(i, text) {
         return change + '\n' + nochange
     }
 }
-function search() {
+function search(keyword) {
     var wordslist = getFile()
-    for (word of wordslist) {
-        
+    var scores = []
+    for (i in wordslist) {
+        word=wordslist[i]
+        console.log("searching"+i+'th\n')
+        a = keyword.split('\t')
+        b = word.split('\t')
+        if (a.length > b.length)
+            [a,b] = [b,a]
+        // a > b
+        b = b.slice(-a.length)
+        var score = 0
+        console.log(score+'\n')
+        for (var i in a) {
+            score += relevance0(a[i].split(' ')[0], b[i].split(' ')[0])
+            console.log(score+'\n')
+            score += relevance1(a[i].split(' ')[1], b[i].split(' ')[1])
+            console.log(score+'\n')
+            score += relevance2(a[i].split(' ')[2], b[i].split(' ')[2])
+            console.log(score+'\n')
+        }
+        console.log(`score is ${score} \n`)
+        scores.push(score)
     }
+    return scores
+}
+function relevance0(a, b) {
+    var similar = ['ㄱㄲㅋ','ㄷㄸㅌ','ㅂㅃㅍ','ㅈㅉㅊ','ㅅㅆ']
+    if(arebothin(a,b,similar)) return 2;
+    else return 0;
+}
+function relevance1(a, b) {
+    var same = ['ㅙㅚㅞ','ㅔㅐ']
+    var similar = ['ㅗㅛ','ㅜㅠ','ㅘㅏㅑ','ㅝㅓㅕ','ㅟㅢㅣ','ㅚㅙㅞㅐㅔㅖㅒ']
+    if(arebothin(a,b,same)) return 40;
+    else if(arebothin(a,b,similar)) return 6;
+    else return 0;
+}
+function relevance2(a, b) {
+    var same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
+    var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ','ㄵㄴㄶㄼㄽㄾㄹㅀㄻㅁㅇ']
+    if(arebothin(a,b,same)) return 2;
+    else if(arebothin(a,b,similar)) return 1;
+    else return 0;
+}
+function arebothin(a, b, arr2d) {
+    if(a==b) return 1;
+    for (var i of arr2d) {
+        for (var j of i) {
+            if (j == a) {
+                for (var k of i) {
+                    if (k == b)
+                        return 1;
+                }
+                return 0;
+            }
+            if (j == b) {
+                for (var k of i) {
+                    if (k == a)
+                        return 1;
+                }
+                return 0;
+            }
+        }
+    }
+    return 0;
 }
 function getFile() {
     var output = ''
@@ -86,7 +167,6 @@ function getFile() {
     var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
     while (strRawContents.indexOf("\r") >= 0)
         strRawContents = strRawContents.replace("\r", "");
-    alert("1")
     var arrLines = strRawContents.split("\n");
     return arrLines
 }
