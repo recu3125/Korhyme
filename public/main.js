@@ -5,27 +5,30 @@ function buttonclick() {
         return 0;
     }
     input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
+
+    //가능한 검색어들 추출
     var tosearch = possiblepron(input)
+    //로 검색된 점수 총합
     for (var i of tosearch) {
-        if (i == tosearch[0])
+        if (i == tosearch[0]) {
             var scores = search(tosearch[0])
-        else
-        {
-            var serres=search(tosearch[0])
-            for(i in scores)
-                scores[i]+=serres[i]
+        }
+        else {
+            var serres = search(tosearch[0])
+            for (var j = 0, len = scores.length; j < len; j++)
+                scores[j] += serres[j]
         }
     }
-    let result = Object.entries(scores).sort((a,b) => a[1]-b[1]).map(e => +e[0]).reverse()
-    let output =''
+    //정렬후 출력
+    let result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
+    let output = ''
     let words = getFile()
-    for(var i=0;i<100;i++)
-    {
-        var word =(''+words[result[i]]).replace(/[ \tE]/g,'')
-        word= Hangul.assemble(word)
-        output=output+ word +'                score:'+scores[result[i]]+'<br>'
+    for (var i = 0; i < 100; i++) {
+        var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
+        word = Hangul.assemble(word)
+        output = output + word + '                score:' + scores[result[i]] + '<br>'
     }
-    document.getElementById('output').innerHTML= output
+    document.getElementById('output').innerHTML = output
 }
 
 function possiblepron(input) {
@@ -55,7 +58,7 @@ function possiblepron(input) {
     disassemed = disassemed.replace(/ㅂ ㅅ/g, 'ㅄ')
     disassemed = disassemed.split('\t')
     //ㄱ ㅘ 	 ㄴ ㅘ ㄱ 	 ㄷ ㅏ ㄹ
-    for (var i in disassemed) {
+    for (var i = 0, len = disassemed.length; i < len; i++) {
         disassemed[i] = disassemed[i].trim()
         if (disassemed[i].length == 3) {
             disassemed[i] = disassemed[i] + ' E'
@@ -96,24 +99,25 @@ function pronrecursive(i, text) {
 function search(keyword) {
     var wordslist = getFile()
     var scores = []
-    for (i in wordslist) {
-        word=wordslist[i]
-        console.log("searching"+i+'th\n')
+    var len = wordslist.length
+    for (var i = 0; i < len; i++) {
+        word = wordslist[i]
+        console.log("searching" + i + 'th\n')
         a = keyword.split('\t')
         b = word.split('\t')
         if (a.length > b.length)
-            [a,b] = [b,a]
+            [a, b] = [b, a]
         // a > b
         b = b.slice(-a.length)
         var score = 0
-        console.log(score+'\n')
-        for (var i in a) {
-            score += relevance0(a[i].split(' ')[0], b[i].split(' ')[0])
-            console.log(score+'\n')
-            score += relevance1(a[i].split(' ')[1], b[i].split(' ')[1])
-            console.log(score+'\n')
-            score += relevance2(a[i].split(' ')[2], b[i].split(' ')[2])
-            console.log(score+'\n')
+        console.log(score + '\n')
+        for (var j = 0, len2 = a.length; j < len2; j++) {
+            score += relevance0(a[j].split(' ')[0], b[j].split(' ')[0])
+            console.log(score + '\n')
+            score += relevance1(a[j].split(' ')[1], b[j].split(' ')[1])
+            console.log(score + '\n')
+            score += relevance2(a[j].split(' ')[2], b[j].split(' ')[2])
+            console.log(score + '\n')
         }
         console.log(`score is ${score} \n`)
         scores.push(score)
@@ -121,26 +125,26 @@ function search(keyword) {
     return scores
 }
 function relevance0(a, b) {
-    var similar = ['ㄱㄲㅋ','ㄷㄸㅌ','ㅂㅃㅍ','ㅈㅉㅊ','ㅅㅆ']
-    if(arebothin(a,b,similar)) return 2;
+    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ']
+    if (arebothin(a, b, similar)) return 2;
     else return 0;
 }
 function relevance1(a, b) {
-    var same = ['ㅙㅚㅞ','ㅔㅐ']
-    var similar = ['ㅗㅛ','ㅜㅠ','ㅘㅏㅑ','ㅝㅓㅕ','ㅟㅢㅣ','ㅚㅙㅞㅐㅔㅖㅒ']
-    if(arebothin(a,b,same)) return 40;
-    else if(arebothin(a,b,similar)) return 6;
+    var same = ['ㅙㅚㅞ', 'ㅔㅐ']
+    var similar = ['ㅗㅛ', 'ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
+    if (arebothin(a, b, same)) return 40;
+    else if (arebothin(a, b, similar)) return 6;
     else return 0;
 }
 function relevance2(a, b) {
     var same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
-    var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ','ㄵㄴㄶㄼㄽㄾㄹㅀㄻㅁㅇ']
-    if(arebothin(a,b,same)) return 2;
-    else if(arebothin(a,b,similar)) return 1;
+    var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄼㄽㄾㄹㅀㄻㅁㅇ']
+    if (arebothin(a, b, same)) return 2;
+    else if (arebothin(a, b, similar)) return 1;
     else return 0;
 }
 function arebothin(a, b, arr2d) {
-    if(a==b) return 1;
+    if (a == b) return 1;
     for (var i of arr2d) {
         for (var j of i) {
             if (j == a) {
