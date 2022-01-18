@@ -8,27 +8,22 @@
     <title>TonyWeb</title>
 </head>
 
-<body style="margin: 0px; background: linear-gradient(60deg, #885d88,#895d9b, #4f3e6e); height:100vh;">
-    <div style="margin-left: 20vw; margin-right: 20vw; height: 100vh ; background-color: #00001188;">
+<body
+    style="margin: 0px; background: linear-gradient(60deg, #885d88,#895d9b, #4f3e6e); height:100vh; background-attachment: fixed;">
+    <div id="div1"
+        style="margin-left: 20vw; margin-right: 20vw; height: 100vh ; background-color: #00001199; background-attachment: fixed;">
         <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
         <script src="./main.js"></script>
         <iframe id="frmFile" src="korean.txt" style="display: none;"></iframe>
 
         <div style="height:50px; width: 100%; ">
             <input id="input" size='    ' maxlength='60' type="text"
-                style="height: 90%; width: 78%; font-size: 20pt; float: left;" onkeypress="if( event.keyCode == 13 ){buttonclick()}" >
-            <button id="search" style="height: 100%;width: 18%;float: right;" ; onclick="buttonclick()"> search </button>
+                style="height: 90%; width: 78%; font-size: 20pt; float: left;"
+                onkeypress="if( event.keyCode == 13 ){buttonclick()}">
+            <button id="search" style="height: 100%;width: 18%;float: right;" ; onclick="buttonclick()"> search
+            </button>
         </div>
-        <p id="output" style="color: whitesmoke;font-size: 10pt; background-color: #00001155;">
-            • Lorem<br>
-            • ipsum<br>
-            • dolor<br>
-            • sit<br>
-            • amet<br>
-            • consectetur<br>
-            • adipisicing<br>
-            • elit.</p>
-
+        <table id="tbl"></table>
     </div>
 
 </body>

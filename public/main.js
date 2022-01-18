@@ -22,16 +22,61 @@ function buttonclick() {
         }
     }
     //정렬후 출력
-    let result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
-    //TODO ㄱㄴㄷ 역순인거 원래대로 바꾸기
-    let output = ''
-    let words = getFile()
+    var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
+    var outputlist = [['단어', '점수']]
+    var words = getFile()
     for (var i = 0; i < 100; i++) {
         var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
         word = Hangul.assemble(word)
-        output = output + word + '                score:' + scores[result[i]] + '<br>'
+        outputlist.push([word, Math.round(scores[result[i]]*4)])
     }
-    document.getElementById('output').innerHTML = output
+    document.getElementById('div1')
+        .appendChild(populateTable(null, outputlist.length, outputlist[0].length, outputlist));
+    let scrollHeight = Math.max(
+        document.body.scrollHeight, document.documentElement.scrollHeight,
+        document.body.offsetHeight, document.documentElement.offsetHeight,
+        document.body.clientHeight, document.documentElement.clientHeight
+    );
+    div1.style.height = scrollHeight + 'px'
+}
+
+function populateTable(table, rows, cells, content) {
+    document.getElementById("tbl").remove()
+    if (!table) table = document.createElement('table');
+    table.id = "tbl"
+    table.style.backgroundColor = '#000000'
+    table.style.box_sizing = 'border-box'
+    table.style.border_collapse = 'collapse'
+    table.style.border_spacing = '0px'
+    table.style.max_width = '100%'
+    table.style.color = 'rgb(0, 0, 0)'
+    table.style.font_size = '16px'
+    table.style.line_height = '32px'
+    table.style.border = '3px solid black'
+    table.style.width = '40%'
+    table.style.align = 'center'
+
+    for (var i = 0; i < rows; ++i) {
+        var row = document.createElement('tr');
+        for (var j = 0; j < cells; ++j) {
+            row.appendChild(document.createElement('td'));
+            row.cells[j].appendChild(document.createTextNode(content[i][j]));
+        }
+        if (i == 0) {
+            row.style.backgroundColor = '#3344BB';
+            row.style.color = '#FFFFFF';
+
+        }
+        else if (i % 2 == 0)
+            row.style.backgroundColor = '#FFFFFF';
+        else
+            row.style.backgroundColor = '#DDDDDD';
+        row.style.border = '3px solid black'
+        row.style.text_align = 'center'
+        row.style.box_sizing = 'border-box'
+        table.appendChild(row);
+    }
+    return table;
 }
 
 function possiblepron(input) {
@@ -125,14 +170,14 @@ function search(keyword) {
             var force0 = 0 //무조건 같게
             var force2 = 0 //무조건 같게
             if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ'
-            || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')
+                || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')
                 force0 = 1
             if (j < alen - 1 && asplit[2] == 'E' && (a[j + 1] || '').split(' ')[0] == 'ㅇ'
-            || j < alen - 1 && bsplit[2] == 'E' && (b[j + 1] || '').split(' ')[0] == 'ㅇ')
+                || j < alen - 1 && bsplit[2] == 'E' && (b[j + 1] || '').split(' ')[0] == 'ㅇ')
                 force2 = 1
-            score += relevance0(asplit[0], bsplit[0], force0)*(j==(alen-1)?1.5:1)
-            score += relevance1(asplit[1], bsplit[1]) *(j==(alen-1)?1.5:1)
-            score += relevance2(asplit[2], bsplit[2], force2)*(j==(alen-1)?1.5:1)
+            score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
+            score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1)
+            score += relevance2(asplit[2], bsplit[2], force2) * (j == (alen - 1) ? 1.5 : 1)
         }
         score = Math.max(score, 0)
         score /= Math.max(alen, originblen)
@@ -145,13 +190,15 @@ function relevance0(a, b, force) {
     if (a == 'ㅇ' && b == 'ㅇ') return 6;
     if (a == b) return 5;
     var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㄴㅁ', 'ㅇㅎ']
+    var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ']
     if (arebothin(a, b, similar)) return 3;
+    if (arebothin(a, b, ssimilar)) return 1;
     else return 0;
 }
 function relevance1(a, b) {
     if (a == b) return 40;
     var same = ['ㅙㅚㅞ', 'ㅔㅐ']
-    var similar = ['ㅗㅛ', 'ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
+    var similar = ['ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕㅗㅛ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
     if (arebothin(a, b, same)) return 40;
     else if (arebothin(a, b, similar)) return 15;
     else return 0;
