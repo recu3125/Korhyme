@@ -1,33 +1,29 @@
+var inputlen
 function buttonclick() {
     var input = document.getElementById("input").value
-    if (input.length <= 1) {
-        alert('1글자 이하로는 검색하실 수 없습니다!')
-        return 0;
-    }
+    inputlen = input.length
     input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
 
     //가능한 검색어들 추출
     var tosearch = possiblepron(input)
+    if (tosearch == 'N')
+        return 0;
     //로 검색된 점수 총합
-    var tosearchlen=tosearch.length
-    for (var i=0;i<tosearchlen;i++) {
+    var tosearchlen = tosearch.length
+    for (var i = 0; i < tosearchlen; i++) { //첫번째면 정의
         if (i == 0) {
-            var scores = search(tosearch[0])
-        }
-        else if(i==tosearchlen-1)
-        {
-            var serres = search(tosearch[i])
-            for (var j = 0, len = scores.length; j < len; j++)
-                scores[j] += (serres[j]*2)
+            var scores = []
+            scores = search(tosearch[0])
         }
         else {
             var serres = search(tosearch[i])
             for (var j = 0, len = scores.length; j < len; j++)
-                scores[j] += serres[j]
+                scores[j] = Math.max(serres[j], scores[j])
         }
     }
     //정렬후 출력
     let result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
+    //TODO ㄱㄴㄷ 역순인거 원래대로 바꾸기
     let output = ''
     let words = getFile()
     for (var i = 0; i < 100; i++) {
@@ -75,10 +71,17 @@ function possiblepron(input) {
     var result = pronrecursive(i, disassemed)
     result = result.replace(/A/g, '\t').replace(/B/g, ' ').split('\n')
     result = result.filter(onlyUnique)
+    if (result.length >= 8) {
+
+        if (!confirm("검색 시간이 오래 걸릴 수 있는 검색어입니다.\n그래도 검색하시겠습니까?")) {
+            return 'N'
+        }
+    }
     return result
 }
 function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
+    var vallen = value.split('\t').length
+    return (self.indexOf(value) === index) && (inputlen + 2 >= vallen);
 }
 function pronrecursive(i, text) {
     var from = ['ㅏ E\tㅇ ㅏ', 'ㅓ E\tㅇ ㅓ', 'ㅣ E\tㅇ ㅣ', 'ㅗ E\tㅇ ㅗ', 'ㅜ E\tㅇ ㅜ', 'ㅡ E\tㅇ ㅡ', 'ㅐ E\tㅇ ㅐ', 'ㅔ E\tㅇ ㅔ', 'ㅣ E\tㅇ ㅏ', 'ㅣ E\tㅇ ㅓ', 'ㅣ E\tㅇ ㅗ', 'ㅣ E\tㅇ ㅜ', 'ㅣ E\tㅇ ㅐ', 'ㅣ E\tㅇ ㅔ', 'ㅗ E\tㅇ ㅏ', 'ㅗ E\tㅇ ㅐ', 'ㅗ E\tㅇ ㅔ', 'ㅜ E\tㅇ ㅓ', 'ㅜ E\tㅇ ㅔ', 'ㅜ E\tㅇ ㅣ', 'ㅡ E\tㅇ ㅣ', 'ㅏ E\tㅎ ㅏ', 'ㅓ E\tㅎ ㅓ', 'ㅣ E\tㅎ ㅣ', 'ㅗ E\tㅎ ㅗ', 'ㅜ E\tㅎ ㅜ', 'ㅡ E\tㅎ ㅡ', 'ㅐ E\tㅎ ㅐ', 'ㅔ E\tㅎ ㅔ', 'ㅣ E\tㅎ ㅏ', 'ㅣ E\tㅎ ㅓ', 'ㅣ E\tㅎ ㅗ', 'ㅣ E\tㅎ ㅜ', 'ㅣ E\tㅎ ㅐ', 'ㅣ E\tㅎ ㅔ', 'ㅗ E\tㅎ ㅏ', 'ㅗ E\tㅎ ㅐ', 'ㅗ E\tㅎ ㅔ', 'ㅜ E\tㅎ ㅓ', 'ㅜ E\tㅎ ㅔ', 'ㅜ E\tㅎ ㅣ', 'ㅡ E\tㅎ ㅣ', 'ㄱ\tㅎ', 'ㄷ\tㅎ', 'ㅂ\tㅎ', 'ㅈ\tㅎ', 'ㅎ\tㄱ', 'ㅎ\tㄷ', 'ㅎ\tㅂ', 'ㅎ\tㅈ', 'ㅑ ', 'ㅕ ', 'ㅛ ', 'ㅠ ', 'ㅒ ', 'ㅖ ', 'ㅘ ', 'ㅙ ', 'ㅚ ', 'ㅝ ', 'ㅞ ', 'ㅟ ', 'ㅢ ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ']
@@ -105,36 +108,58 @@ function search(keyword) {
         word = wordslist[i]
         a = keyword.split('\t')
         b = word.split('\t')
-        if (a.length > b.length)
+        var originblen = b.length
+        var alen = a.length
+        if (alen > originblen)
             [a, b] = [b, a]
         // a > b
-        b = b.slice(-a.length)
+        b = b.slice(-alen)
         var score = 0
-        for (var j = 0, len2 = a.length; j < len2; j++) {
-            score += relevance0(a[j].split(' ')[0], b[j].split(' ')[0])
-            score += relevance1(a[j].split(' ')[1], b[j].split(' ')[1])
-            score += relevance2(a[j].split(' ')[2], b[j].split(' ')[2])
+        var asplit
+        var bsplit
+        for (var j = 0; j < alen; j++) {
+            var befasplit = asplit
+            var befbsplit = bsplit
+            asplit = (a[j] || '').split(' ')
+            bsplit = (b[j] || '').split(' ')
+            var force0 = 0 //무조건 같게
+            var force2 = 0 //무조건 같게
+            if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ'
+            || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')
+                force0 = 1
+            if (j < alen - 1 && asplit[2] == 'E' && (a[j + 1] || '').split(' ')[0] == 'ㅇ'
+            || j < alen - 1 && bsplit[2] == 'E' && (b[j + 1] || '').split(' ')[0] == 'ㅇ')
+                force2 = 1
+            score += relevance0(asplit[0], bsplit[0], force0)*(j==(alen-1)?1.5:1)
+            score += relevance1(asplit[1], bsplit[1]) *(j==(alen-1)?1.5:1)
+            score += relevance2(asplit[2], bsplit[2], force2)*(j==(alen-1)?1.5:1)
         }
+        score = Math.max(score, 0)
+        score /= Math.max(alen, originblen)
         scores.push(score)
     }
     return scores
 }
-function relevance0(a, b) {
-    if (a == b) return 3;
-    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ','ㄴㅁ','ㅇㅎ']
-    if (arebothin(a, b, similar)) return 2;
+function relevance0(a, b, force) {
+    if (force == 1 && a != b) return -10000;
+    if (a == 'ㅇ' && b == 'ㅇ') return 6;
+    if (a == b) return 5;
+    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㄴㅁ', 'ㅇㅎ']
+    if (arebothin(a, b, similar)) return 3;
     else return 0;
 }
 function relevance1(a, b) {
-    if (a == b) return 50;
+    if (a == b) return 40;
     var same = ['ㅙㅚㅞ', 'ㅔㅐ']
     var similar = ['ㅗㅛ', 'ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
     if (arebothin(a, b, same)) return 40;
-    else if (arebothin(a, b, similar)) return 6;
+    else if (arebothin(a, b, similar)) return 15;
     else return 0;
 }
-function relevance2(a, b) {
-    if (a == b) return 3;
+function relevance2(a, b, force) {
+    if (force == 1 && a != b) return -10000;
+    if (a == 'E' && b == 'E') return 3;
+    if (a == b) return 2;
     var same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
     var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄼㄽㄾㄹㅀㄻㅁㅇ']
     if (arebothin(a, b, same)) return 2;
