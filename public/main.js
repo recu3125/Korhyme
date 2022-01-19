@@ -1,6 +1,9 @@
 var inputlen
+function initinput() {
+    document.getElementById("input").value = request()
+}
 function buttonclick() {
-    var input = document.getElementById("input").value
+    var input = request()
     inputlen = input.length
     input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
 
@@ -78,7 +81,15 @@ function populateTable(table, rows, cells, content) {
     }
     return table;
 }
-
+function redir()
+{
+    var redinp = document.getElementById("input").value
+    location.href='/search?key='+redinp
+}
+function request()
+{
+    return decodeURI(location.search.slice(5))
+}
 function possiblepron(input) {
     input = input.replace(/ ?/g, '\t').trim()
     //텍    스    트

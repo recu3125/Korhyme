@@ -11,4 +11,10 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + "/public/main.html")
 })
 
-app.use(express.static('public'))
+app.get('/search', (req, res) => {
+  console.log(req.query);
+  res.sendFile(__dirname + "/public/search.html")
+})
+
+
+  app.use(express.static('public'))
