@@ -12,7 +12,6 @@ app.get('/', function (req, res) {
 })
 
 app.get('/search', (req, res) => {
-  console.log(req.query);
   res.sendFile(__dirname + "/public/search.html")
 })
 

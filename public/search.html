@@ -5,27 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TonyWeb</title>
+    <title>korhyme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
 </head>
 
 <body onload="buttonclick()"
-    style="margin: 0px; background: linear-gradient(60deg, #885d88,#895d9b, #4f3e6e); height:100vh; background-attachment: fixed;">
-    <div id="div1"
-        style="margin-left: 20vw; margin-right: 20vw; height: 100vh ; background-color: #00001199; background-attachment: fixed;">
-        <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
-        <script src="./main.js"></script>
-        <iframe id="frmFile" src="korean.txt" style="display: none;"></iframe>
-
-        <div style="height:50px; width: 100%; ">
-            <input id="input" size='    ' maxlength='60' type="text"
-                style="height: 90%; width: 78%; font-size: 20pt; float: left; margin-top: 3vh;"
-                onkeypress="if( event.keyCode == 13 ){redir()}">
-            <button id="search" style="height: 100%;width: 18%;float: right; margin-top: 3vh;" ; onclick="redir()">
-                search
-            </button>
+    style="background: linear-gradient(60deg, #f5c12f,#ffdc7b); height:100%; background-attachment: fixed; color: black; font-size: 14pt;">
+    <center>
+        <p style="font-size: 40pt;font-family: 'Gugi', cursive;margin-bottom: 0px;">한국어 라임 검색기</p>
+        <p style="margin-bottom: 30px;">한국어 라임 검색기</p>
+        <hr style="width: 600px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
+        <div id="div1"
+            style="overflow:auto ;border-radius: 4px;width:500px; height: 100%; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
+            <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+            <script src="./main.js"></script>
+            <iframe id="frmFile" src="korean.txt" style="display: none;"></iframe>
+            <div style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 30px">
+                <input id="input" size='    ' maxlength='60' type="text"
+                    style="border: solid 2px black;height: 45px; width: 440px; font-size: 20pt; float: left;"
+                    onkeypress="if( event.keyCode == 13 ){redir()}">
+                <button id="search"
+                    style="border-radius: 10px; height: 50px;width: 50px;float: right;background-image: url('https://i.ibb.co/QnNMXfK/iconmonstr-magnifier-2-240.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
+                    onclick="redir()">
+                </button>
+            </div>
+            <center id="tbcen">
+                <table id="tbl"></table>
+            </center>
         </div>
-        <table id="tbl"></table>
-    </div>
+    </center>
     <script>initinput();</script>
 </body>
 

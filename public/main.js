@@ -31,16 +31,10 @@ function buttonclick() {
     for (var i = 0; i < 100; i++) {
         var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
         word = Hangul.assemble(word)
-        outputlist.push([word, Math.round(scores[result[i]]*4)])
+        outputlist.push([word, Math.round(scores[result[i]] * 4)])
     }
-    document.getElementById('div1')
+    document.getElementById('tbcen')
         .appendChild(populateTable(null, outputlist.length, outputlist[0].length, outputlist));
-    let scrollHeight = Math.max(
-        document.body.scrollHeight, document.documentElement.scrollHeight,
-        document.body.offsetHeight, document.documentElement.offsetHeight,
-        document.body.clientHeight, document.documentElement.clientHeight
-    );
-    div1.style.height = scrollHeight + 'px'
 }
 
 function populateTable(table, rows, cells, content) {
@@ -48,16 +42,9 @@ function populateTable(table, rows, cells, content) {
     if (!table) table = document.createElement('table');
     table.id = "tbl"
     table.style.backgroundColor = '#000000'
-    table.style.box_sizing = 'border-box'
-    table.style.border_collapse = 'collapse'
-    table.style.border_spacing = '0px'
-    table.style.max_width = '100%'
     table.style.color = 'rgb(0, 0, 0)'
-    table.style.font_size = '16px'
-    table.style.line_height = '32px'
-    table.style.border = '3px solid black'
-    table.style.width = '40%'
-    table.style.align = 'center'
+    table.style.border = '2px solid black'
+    table.style.width = '80%'
 
     for (var i = 0; i < rows; ++i) {
         var row = document.createElement('tr');
@@ -66,28 +53,26 @@ function populateTable(table, rows, cells, content) {
             row.cells[j].appendChild(document.createTextNode(content[i][j]));
         }
         if (i == 0) {
-            row.style.backgroundColor = '#3344BB';
+            row.style.backgroundColor = '#1ca7a0';
             row.style.color = '#FFFFFF';
 
         }
         else if (i % 2 == 0)
             row.style.backgroundColor = '#FFFFFF';
         else
-            row.style.backgroundColor = '#DDDDDD';
-        row.style.border = '3px solid black'
+            row.style.backgroundColor = '#BBBBBB';
+        row.style.border = '2px solid black'
         row.style.text_align = 'center'
         row.style.box_sizing = 'border-box'
         table.appendChild(row);
     }
     return table;
 }
-function redir()
-{
+function redir() {
     var redinp = document.getElementById("input").value
-    location.href='/search?key='+redinp
+    location.href = '/search?key=' + redinp
 }
-function request()
-{
+function request() {
     return decodeURI(location.search.slice(5))
 }
 function possiblepron(input) {
