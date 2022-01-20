@@ -16,4 +16,4 @@ app.get('/search', (req, res) => {
 })
 
 
-  app.use(express.static('public'))
+app.use(express.static('public'))

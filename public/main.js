@@ -173,7 +173,8 @@ function search(keyword) {
                 force2 = 1
             score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
             score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1)
-            score += relevance2(asplit[2], bsplit[2], force2) * (j == (alen - 1) ? 1.5 : 1)
+            var rel2= relevance2(asplit[2], bsplit[2], force2)
+            score += rel2 * (j == (alen - 1) ? rel2>=2 ? 10 : 1.5 : 1)
         }
         score = Math.max(score, 0)
         score /= Math.max(alen, originblen)
@@ -195,8 +196,10 @@ function relevance1(a, b) {
     if (a == b) return 40;
     var same = ['ㅙㅚㅞ', 'ㅔㅐ']
     var similar = ['ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕㅗㅛ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
+    var ssimilar = ['ㅏㅓㅗㅜㅐㅔ','ㅑㅕㅛㅠㅒㅖ']
     if (arebothin(a, b, same)) return 40;
-    else if (arebothin(a, b, similar)) return 15;
+    else if (arebothin(a, b, similar)) return 35;
+    else if (arebothin(a, b, ssimilar)) return 8;
     else return 0;
 }
 function relevance2(a, b, force) {
