@@ -1,9 +1,10 @@
 var inputlen
 function initinput() {
-    document.getElementById("input").value = request()
+    document.getElementById("input").value = getParameter("key")
+    document.getElementById("freqcheck").checked = (getParameter("freq")=="true")
 }
 function buttonclick() {
-    var input = request()
+    var input = getParameter("key")
     inputlen = input.length
     input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
 
@@ -27,7 +28,7 @@ function buttonclick() {
     //정렬후 출력
     var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
     var outputlist = [['단어', '점수']]
-    var words = getFile()
+    var words = document.getElementById("freqcheck").checked ? getfile("freq") : getfile("all")
     for (var i = 0; i < 100; i++) {
         var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
         word = Hangul.assemble(word)
@@ -72,10 +73,13 @@ function populateTable(table, rows, cells, content) {
 }
 function redir() {
     var redinp = document.getElementById("input").value
-    location.href = '/search?key=' + redinp
+    location.href = '/search?key=' + redinp + "\&freq=" + document.getElementById("freqcheck").checked
 }
-function request() {
-    return decodeURI(location.search.slice(5))
+function getParameter(name) {   
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 function possiblepron(input) {
     input = input.replace(/ ?/g, '\t').trim()
@@ -145,7 +149,7 @@ function pronrecursive(i, text) {
     }
 }
 function search(keyword) {
-    var wordslist = getFile()
+    var wordslist = document.getElementById("freqcheck").checked ? getfile("freq") : getfile("all")
     var scores = []
     var len = wordslist.length
     for (var i = 0; i < len; i++) {
@@ -236,9 +240,8 @@ function arebothin(a, b, arr2d) {
     }
     return 0;
 }
-function getFile() {
-    var output = ''
-    var oFrame = document.getElementById("frmFile");
+function getfile(fileName) {
+    var oFrame = document.getElementById(fileName);
     var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
     while (strRawContents.indexOf("\r") >= 0)
         strRawContents = strRawContents.replace("\r", "");
