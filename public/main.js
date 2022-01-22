@@ -49,14 +49,14 @@ function buttonclick() {
                 if (i % 2 == 0)
                     row.style.backgroundColor = '#FFFFFF';
                 else
-                    row.style.backgroundColor = '#BBBBBB';
+                    row.style.backgroundColor = '#DDDDDD';
                 row.style.border = '2px solid black'
                 row.style.text_align = 'center'
                 row.style.box_sizing = 'border-box'
                 table.appendChild(row);
             }
         }
-    }, 100);
+    }, 1000);
 }
 function populateTable(table, rows, cells, content) {
     document.getElementById("tbl").remove()
@@ -64,7 +64,7 @@ function populateTable(table, rows, cells, content) {
     table.id = "tbl"
     table.style.backgroundColor = '#000000'
     table.style.color = 'rgb(0, 0, 0)'
-    table.style.border = '2px solid black'
+    table.style.border = '1px solid black'
     table.style.width = '80%'
 
     for (var i = 0; i < rows; ++i) {
@@ -81,7 +81,7 @@ function populateTable(table, rows, cells, content) {
         else if (i % 2 == 0)
             row.style.backgroundColor = '#FFFFFF';
         else
-            row.style.backgroundColor = '#BBBBBB';
+            row.style.backgroundColor = '#DDDDDD';
         row.style.border = '2px solid black'
         row.style.text_align = 'center'
         row.style.box_sizing = 'border-box'

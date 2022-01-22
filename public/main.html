@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=800, initial-scale=0.5">
     <title>korhyme</title>
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,29 +13,27 @@
 </head>
 
 <body
-    style="background: linear-gradient(60deg, #f5c12f,#ffdc7b); height:100%; background-attachment: fixed; color: black; font-size: 14pt;">
+style="margin-bottom: 0px;background: linear-gradient(60deg, #f5c12f,#ffdc7b); height:100%; background-attachment: fixed; color: black; font-size: 14pt;">
     <center>
         <p style="font-size: 60pt;font-family: 'Gugi', cursive;margin-bottom: 0px;">Korhyme</p>
         <p style="margin-bottom: 30px;font-family: 'Gugi', cursive;font-size: 20pt;">한국어 라임 검색기</p>
         <hr style="width: 600px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
         <div id="div1"
-            style="border-radius: 4px;width:500px; height: 115px ; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px;">
+            style="overflow:hidden ;border-radius: 4px;width:500px; height: 140px ; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
             <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
             <script src="./main.js"></script>
-            <iframe id="frmFile" src="korean.txt" style="display: none;"></iframe>
-            <div style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 30px">
+            <div
+                style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 3px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
                 <input id="input" size='    ' maxlength='60' type="text"
-                    style="border: solid 2px black;height: 45px; width: 440px; font-size: 20pt; float: left;"
+                    style="border: solid 2px #1ca7a0;height: 45px; width: 437px; font-size: 20pt; float: left;"
                     onkeypress="if( event.keyCode == 13 ){redir()}">
                 <button id="search"
-                    style="border-radius: 10px; height: 50px;width: 50px;float: right;background-image: url('https://i.ibb.co/QnNMXfK/iconmonstr-magnifier-2-240.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
-                    ; onclick="redir()">
+                    style="border: solid 3px #1ca7a0; background-color: #1ca7a0;border-radius: 0px; height: 50px;width: 50px;float: left;background-image: url('https://i.ibb.co/SBrgyXM/search-13-xxl.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
+                    onclick="redir()">
                 </button>
             </div>
-            <label style="font-size: 20px;"><input id="freqcheck" type="checkbox" checked style="width: 20px; height: 20px;">사용 빈도가 높은 단어 내에서만 검색(속도 향상)</label>
-            <center>
-                <table id="tbl"></table>
-            </center>
+            <label style="font-size: 20px;margin-top: 0px;margin-bottom: 30px;"><input id="freqcheck" type="checkbox" checked
+                    style="width: 20px; height: 20px;">사용 빈도가 높은 단어 내에서만 검색(속도 향상)</label>
         </div>
     </center>
 </body>

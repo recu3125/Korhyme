@@ -28,13 +28,13 @@
         <p style="margin-bottom: 30px;font-family: 'Gugi', cursive;font-size: 20pt;">한국어 라임 검색기</p>
         <hr style="width: 600px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
         <div id="div1"
-            style="overflow:auto ;border-radius: 4px;width:500px; height: 100%; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
+            style="overflow:hidden ;border-radius: 4px;width:500px; height: 100%; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
             <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
             <script src="./main.js"></script>
             <iframe id="all" src="korean.txt" style="display: none;"></iframe>
             <iframe id="freq" src="freq.txt" style="display: none;"></iframe>
             <div
-                style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 30px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
+                style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 3px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
                 <input id="input" size='    ' maxlength='60' type="text"
                     style="border: solid 2px #1ca7a0;height: 45px; width: 437px; font-size: 20pt; float: left;"
                     onkeypress="if( event.keyCode == 13 ){redir()}">
@@ -43,7 +43,7 @@
                     onclick="redir()">
                 </button>
             </div>
-            <label style="font-size: 20px;"><input id="freqcheck" type="checkbox" checked
+            <label style="font-size: 20px;margin-top: 0px;margin-bottom: 30px;"><input id="freqcheck" type="checkbox" checked
                     style="width: 20px; height: 20px;">사용 빈도가 높은 단어 내에서만 검색(속도 향상)</label>
             <center id="tbcen">
                 <table id="tbl"></table>
