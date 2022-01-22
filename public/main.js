@@ -17,14 +17,13 @@ function buttonclick() {
     var outputlist = [['단어', '점수']]
     var words = document.getElementById("freqcheck").checked ? getfile("freq")[0] : getfile("all")[0]
     for (var i = 0; i < 100; i++) {
-        var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
-        word = Hangul.assemble(word)
+        var word = ('' + words[result[i]])
         outputlist.push([word, Math.round(scores[result[i]] * 4)])
     }
     document.getElementById('tbcen')
         .appendChild(populateTable(null, outputlist.length, outputlist[0].length, outputlist));
 
-    document.getElementById('loading').style.display = 'none'
+        document.getElementById('loading').style.display = 'none'
 }
 
 function populateTable(table, rows, cells, content) {
@@ -70,9 +69,9 @@ function getParameter(name) {
 }
 function korformatter(commonkor) {
     //가나다
-    commonkor = commonkor.replace(/ ?/g, '\t').trim()
-    //가\t나\t다
-    disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').trim()
+    commonkor = commonkor.replace(/ ?/g, 'L').replace(/^\L+|\L+$/g, '').trim()
+    //가L나L다
+    disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
     disassemed = disassemed.replace(/ㅗ ㅏ/g, 'ㅘ')
     disassemed = disassemed.replace(/ㅗ ㅐ/g, 'ㅙ')
     disassemed = disassemed.replace(/ㅗ ㅣ/g, 'ㅚ')
@@ -91,14 +90,14 @@ function korformatter(commonkor) {
     disassemed = disassemed.replace(/ㄹ ㅍ/g, 'ㄿ')
     disassemed = disassemed.replace(/ㄹ ㅎ/g, 'ㅀ')
     disassemed = disassemed.replace(/ㅂ ㅅ/g, 'ㅄ')
-    disassemed = disassemed.split('\t')
+    disassemed = disassemed.split('L')
     for (var i = 0, len = disassemed.length; i < len; i++) {
-        disassemed[i] = disassemed[i].trim()
+        disassemed[i] = disassemed[i].replace(/^\L+|\L+$/g, '').trim()
         if (disassemed[i].length == 3) {
             disassemed[i] = disassemed[i] + ' E'
         }
     }
-    disassemed = disassemed.join('\t')
+    disassemed = disassemed.join('L')
     return disassemed
 }
 function betterDisassemble(input) {
@@ -119,112 +118,112 @@ function betterDisassemble(input) {
 function stdpron(a) {
     var a = korformatter(a)
     //모음 한단어에 하나로
-    a = a.replace(/ㅑ/g, 'ㅣ E\tㅇ ㅏ')
-    a = a.replace(/ㅕ/g, 'ㅣ E\tㅇ ㅓ')
-    a = a.replace(/ㅛ/g, 'ㅣ E\tㅇ ㅗ')
-    a = a.replace(/ㅠ/g, 'ㅣ E\tㅇ ㅜ')
-    a = a.replace(/ㅒ/g, 'ㅣ E\tㅇ ㅐ')
-    a = a.replace(/ㅖ/g, 'ㅣ E\tㅇ ㅔ')
-    a = a.replace(/ㅘ/g, 'ㅗ E\tㅇ ㅏ')
-    a = a.replace(/ㅙ/g, 'ㅗ E\tㅇ ㅐ')
-    a = a.replace(/ㅚ/g, 'ㅜ E\tㅇ ㅔ')
-    a = a.replace(/ㅝ/g, 'ㅜ E\tㅇ ㅓ')
-    a = a.replace(/ㅞ/g, 'ㅜ E\tㅇ ㅔ')
-    a = a.replace(/ㅟ/g, 'ㅜ E\tㅇ ㅣ')
-    a = a.replace(/ㅢ/g, 'ㅡ E\tㅇ ㅣ')
-    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
-    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
-    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
-    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
+    a = a.replace(/ㅑ/g, 'ㅣ ELㅇ ㅏ')
+    a = a.replace(/ㅕ/g, 'ㅣ ELㅇ ㅓ')
+    a = a.replace(/ㅛ/g, 'ㅣ ELㅇ ㅗ')
+    a = a.replace(/ㅠ/g, 'ㅣ ELㅇ ㅜ')
+    a = a.replace(/ㅒ/g, 'ㅣ ELㅇ ㅐ')
+    a = a.replace(/ㅖ/g, 'ㅣ ELㅇ ㅔ')
+    a = a.replace(/ㅘ/g, 'ㅗ ELㅇ ㅏ')
+    a = a.replace(/ㅙ/g, 'ㅗ ELㅇ ㅐ')
+    a = a.replace(/ㅚ/g, 'ㅜ ELㅇ ㅔ')
+    a = a.replace(/ㅝ/g, 'ㅜ ELㅇ ㅓ')
+    a = a.replace(/ㅞ/g, 'ㅜ ELㅇ ㅔ')
+    a = a.replace(/ㅟ/g, 'ㅜ ELㅇ ㅣ')
+    a = a.replace(/ㅢ/g, 'ㅡ ELㅇ ㅣ')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
 
     //사이시옷(모든 시옷을 사이시옷으로 생각)
-    a = a.replace(/ㅅ\t(.) ㅣ/g, 'ㄴ\t$1 ㅣ')
-    a = a.replace(/ㅅ\t[ㄴㅁ]/g, 'ㅅ\tㄴ')
-    a = a.replace(/ㅅ\tㄱ/g, 'E\tㄲ')
-    a = a.replace(/ㅅ\tㄷ/g, 'E\tㄸ')
-    a = a.replace(/ㅅ\tㅂ/g, 'E\tㅃ')
-    a = a.replace(/ㅅ\tㅅ/g, 'E\tㅆ')
-    a = a.replace(/ㅅ\tㅈ/g, 'E\tㅉ')
+    a = a.replace(/ㅅL(.) ㅣ/g, 'ㄴL$1 ㅣ')
+    a = a.replace(/ㅅL[ㄴㅁ]/g, 'ㅅLㄴ')
+    a = a.replace(/ㅅLㄱ/g, 'ELㄲ')
+    a = a.replace(/ㅅLㄷ/g, 'ELㄸ')
+    a = a.replace(/ㅅLㅂ/g, 'ELㅃ')
+    a = a.replace(/ㅅLㅅ/g, 'ELㅆ')
+    a = a.replace(/ㅅLㅈ/g, 'ELㅉ')
 
     //된소리되기(어간생각X)
-    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㄱ/g, '$1\tㄲ')
-    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㄷ/g, '$1\tㄸ')
-    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅂ/g, '$1\tㅃ')
-    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅅ/g, '$1\tㅆ')
-    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅈ/g, '$1\tㅉ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄱ/g, '$1Lㄲ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄷ/g, '$1Lㄸ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅂ/g, '$1Lㅃ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅅ/g, '$1Lㅆ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅈ/g, '$1Lㅉ')
 
     //동화
-    a = a.replace(/ㄴ\tㄹ/g, 'ㄹ\tㄹ')
-    a = a.replace(/ㄹ\tㄴ/g, 'ㄹ\tㄹ')
-    a = a.replace(/ㅀ\tㄴ/g, 'ㄹ\tㄹ')
-    a = a.replace(/ㄾ\tㄴ/g, 'ㄹ\tㄹ')
-    a = a.replace(/([ㅁㅇ])\tㄹ/g, '$1\tㄴ')
-    a = a.replace(/ㄱ\tㄹ/g, 'ㅇ\tㄴ')
-    a = a.replace(/ㅂ\tㄹ/g, 'ㅁ\tㄴ')
-    a = a.replace(/[ㄱㄲㅋㄳㄺ]\t([ㄴㅁ])/g, 'ㅇ\t$1')
-    a = a.replace(/[ㄷㅅㅆㅈㅊㅌㅎ]\t([ㄴㅁ])/g, 'ㄴ\t$1')
-    a = a.replace(/[ㅂㅍㄼㄿㅄ]\t([ㄴㅁ])/g, 'ㅁ\t$1')
+    a = a.replace(/ㄴLㄹ/g, 'ㄹLㄹ')
+    a = a.replace(/ㄹLㄴ/g, 'ㄹLㄹ')
+    a = a.replace(/ㅀLㄴ/g, 'ㄹLㄹ')
+    a = a.replace(/ㄾLㄴ/g, 'ㄹLㄹ')
+    a = a.replace(/([ㅁㅇ])Lㄹ/g, '$1Lㄴ')
+    a = a.replace(/ㄱLㄹ/g, 'ㅇLㄴ')
+    a = a.replace(/ㅂLㄹ/g, 'ㅁLㄴ')
+    a = a.replace(/[ㄱㄲㅋㄳㄺ]L([ㄴㅁ])/g, 'ㅇL$1')
+    a = a.replace(/[ㄷㅅㅆㅈㅊㅌㅎ]L([ㄴㅁ])/g, 'ㄴL$1')
+    a = a.replace(/[ㅂㅍㄼㄿㅄ]L([ㄴㅁ])/g, 'ㅁL$1')
 
     //받침의 발음
-    a = a.replace(/([ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅋㅌㅍㄲㅆ])\tㅇ/g, 'E\t$1')
-    a = a.replace(/ㄳ\tㅇ/g, 'ㄱ\tㅆ')
-    a = a.replace(/ㄵ\tㅇ/g, 'ㄴ\tㅈ')
-    a = a.replace(/ㄶ\tㅇ/g, 'ㄴ\tㅇ')
-    a = a.replace(/ㄺ\tㅇ/g, 'ㄹ\tㄱ')
-    a = a.replace(/ㄻ\tㅇ/g, 'ㄹ\tㅁ')
-    a = a.replace(/ㄼ\tㅇ/g, 'ㄹ\tㅂ')
-    a = a.replace(/ㄽ\tㅇ/g, 'ㄹ\tㅆ')
-    a = a.replace(/ㄾ\tㅇ/g, 'ㄹ\tㅌ')
-    a = a.replace(/ㄿ\tㅇ/g, 'ㄹ\tㅍ')
-    a = a.replace(/ㅀ\tㅇ/g, 'ㄹ\tㅇ')
-    a = a.replace(/ㅄ\tㅇ/g, 'ㅂ\tㅆ')
-    a = a.replace(/ㅎ\tㄴ/g, 'ㄴ\tㄴ')
-    a = a.replace(/([ㅎㄶㅀ])\tㅅ/g, '$1\tㅆ')
-    a = a.replace(/([ㅎㄶㅀ])\tㄱ/g, '$1\tㅋ')
-    a = a.replace(/([ㅎㄶㅀ])\tㄷ/g, '$1\tㅌ')
-    a = a.replace(/([ㅎㄶㅀ])\tㅈ/g, '$1\tㅊ')
-    a = a.replace(/([ㄱㄺ])\tㅎ/g, 'E\tㅋ')
-    a = a.replace(/([ㄷ])\tㅎ/g, 'E\tㅊ')
-    a = a.replace(/([ㅂㄼ])\tㅎ/g, 'E\tㅍ')
-    a = a.replace(/([ㅈㄵ])\tㅎ/g, 'E\tㅊ')
-    a = a.replace(/([ㅅㅈㅊㅌ])\tㅎ/g, 'E\tㅌ')
+    a = a.replace(/([ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅋㅌㅍㄲㅆ])Lㅇ/g, 'EL$1')
+    a = a.replace(/ㄳLㅇ/g, 'ㄱLㅆ')
+    a = a.replace(/ㄵLㅇ/g, 'ㄴLㅈ')
+    a = a.replace(/ㄶLㅇ/g, 'ㄴLㅇ')
+    a = a.replace(/ㄺLㅇ/g, 'ㄹLㄱ')
+    a = a.replace(/ㄻLㅇ/g, 'ㄹLㅁ')
+    a = a.replace(/ㄼLㅇ/g, 'ㄹLㅂ')
+    a = a.replace(/ㄽLㅇ/g, 'ㄹLㅆ')
+    a = a.replace(/ㄾLㅇ/g, 'ㄹLㅌ')
+    a = a.replace(/ㄿLㅇ/g, 'ㄹLㅍ')
+    a = a.replace(/ㅀLㅇ/g, 'ㄹLㅇ')
+    a = a.replace(/ㅄLㅇ/g, 'ㅂLㅆ')
+    a = a.replace(/ㅎLㄴ/g, 'ㄴLㄴ')
+    a = a.replace(/([ㅎㄶㅀ])Lㅅ/g, '$1Lㅆ')
+    a = a.replace(/([ㅎㄶㅀ])Lㄱ/g, '$1Lㅋ')
+    a = a.replace(/([ㅎㄶㅀ])Lㄷ/g, '$1Lㅌ')
+    a = a.replace(/([ㅎㄶㅀ])Lㅈ/g, '$1Lㅊ')
+    a = a.replace(/([ㄱㄺ])Lㅎ/g, 'ELㅋ')
+    a = a.replace(/([ㄷ])Lㅎ/g, 'ELㅊ')
+    a = a.replace(/([ㅂㄼ])Lㅎ/g, 'ELㅍ')
+    a = a.replace(/([ㅈㄵ])Lㅎ/g, 'ELㅊ')
+    a = a.replace(/([ㅅㅈㅊㅌ])Lㅎ/g, 'ELㅌ')
 
     //7종성예외
     a = a.replace(/ㅂ ㅏ ㄼ/g, 'ㅂ ㅏ ㅂ')
     a = a.replace(/ㄴ ㅓ ㄼ/g, 'ㄴ ㅓ ㅂ')
 
     //7종성
-    a = a.replace(/[ㄲㅋㄳㄺ]\t/g, 'ㄱ\t')
-    a = a.replace(/[ㄵ]\t/g, 'ㄴ\t')
-    a = a.replace(/[ㅅㅆㅈㅊㅌ]\t/g, 'ㄷ\t')
-    a = a.replace(/[ㄼㄽㄾ]\t/g, 'ㄹ\t')
-    a = a.replace(/[ㄻ]\t/g, 'ㅁ\t')
-    a = a.replace(/[ㅍㅄ]\t/g, 'ㅂ\t')
-    a = a.replace(/[ㄿ]\t/g, 'ㅇ\t')
+    a = a.replace(/[ㄲㅋㄳㄺ]L/g, 'ㄱL')
+    a = a.replace(/[ㄵ]L/g, 'ㄴL')
+    a = a.replace(/[ㅅㅆㅈㅊㅌ]L/g, 'ㄷL')
+    a = a.replace(/[ㄼㄽㄾ]L/g, 'ㄹL')
+    a = a.replace(/[ㄻ]L/g, 'ㅁL')
+    a = a.replace(/[ㅍㅄ]L/g, 'ㅂL')
+    a = a.replace(/[ㄿ]L/g, 'ㅇL')
 
-    a = a.replace(/ㅎ\t/g, 'E\t')
+    a = a.replace(/ㅎL/g, 'EL')
 
     //규정에 없지만 자율적으로
-    a = a.replace(/([ㄴ])\tㅎ/g, 'E\tㄴ')
-    a = a.replace(/([ㄹ])\tㅎ/g, 'E\tㄹ')
-    a = a.replace(/([ㅁ])\tㅎ/g, 'E\tㅁ')
-    a = a.replace(/([ㅇ])\tㅎ/g, 'ㅇ\tㅇ')
+    a = a.replace(/([ㄴ])Lㅎ/g, 'ELㄴ')
+    a = a.replace(/([ㄹ])Lㅎ/g, 'ELㄹ')
+    a = a.replace(/([ㅁ])Lㅎ/g, 'ELㅁ')
+    a = a.replace(/([ㅇ])Lㅎ/g, 'ㅇLㅇ')
     return a;
 }
 function onlyUnique(value, index, self) {
-    var vallen = value.split('\t').length
+    var vallen = value.split('L').length
     return (self.indexOf(value) === index) && (inputlen + 2 >= vallen);
 }
 function search(keyword) {
     var wordslist = document.getElementById("freqcheck").checked ? getfile("freq")[1] : getfile("all")[1]
     var scores = []
     var len = wordslist.length
-    var ao = keyword.split('\t')
+    var ao = keyword.split('L')
     var aleno = ao.length
     for (var i = 0; i < len; i++) {
         var a = ao //입력 단어 발음
         var alen = aleno //길이
-        b = wordslist[i].split('\t')// 비교할 단어 발음
+        b = (wordslist[i]||'').split('L')// 비교할 단어 발음
         var blen = b.length //길이
         if (alen < blen){
             b = b.slice(-alen)
@@ -264,10 +263,9 @@ function search(keyword) {
 }
 function relevance0(a, b, force) {
     if (force == 1 && a != b) return -10000;
-    if (a == 'ㅇ' && b == 'ㅇ') return 6;
     if (a == b) return 5;
-    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ']
-    var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㅇㅎ', 'ㄴㄹㅁ']
+    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㅇㅎ']
+    var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㄴㄹㅁ']
     if (arebothin(a, b, similar)) return 3;
     if (arebothin(a, b, ssimilar)) return 1;
     else return 0;
@@ -320,7 +318,7 @@ function getfile(fileName) {
     var a = [], b = [], c = []
     if (document.getElementById("freqcheck").checked) {
         for (i of arrLines) {
-            splitted = i.split(',')
+            splitted = i.split('\t')
             a.push(splitted[0])
             b.push(splitted[1])
         }
@@ -328,11 +326,19 @@ function getfile(fileName) {
     }
     else {
         for (i of arrLines) {
-            splitted = i.split(',')
+            splitted = i.split('\t')
             a.push(splitted[0])
             b.push(splitted[1])
             c.push(splitted[2])
         }
         return [a,b,c]
     }
+}
+
+//기능 외, 데이터베이스 제작용 함수 TODO
+//완성된 단어 목록 입력시 독자포맷 발음으로 콘솔로그
+function databasemaker(filename) {
+    var oFrame = document.getElementById(filename);
+    var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
+    console.log(stdpron(strRawContents.replace(/\n/g,'A')).replace(/A/g,'\n').replace(/^L/gm,'').replace(/L$/gm,''))
 }
