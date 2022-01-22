@@ -1,34 +1,21 @@
 var inputlen
 function initinput() {
     document.getElementById("input").value = getParameter("key")
-    document.getElementById("freqcheck").checked = (getParameter("freq")=="true")
+    document.getElementById("freqcheck").checked = (getParameter("freq") == "true")
+    if(getParameter("key")=='') location.href = '/'
 }
 function buttonclick() {
     var input = getParameter("key")
     inputlen = input.length
-    input = input.replace(/[^가-힣]/, '') //띄어쓰기금지, 한국어 외 금지 -혹은 자동 제외후 검색
+    input = input.replace(/[^가-힣]/, '') //자동 제외후
+    var tosearch = stdpron(input)
+    var scores = search(tosearch)
+    
 
-    //가능한 검색어들 추출
-    var tosearch = possiblepron(input)
-    if (tosearch == 'N')
-        return 0;
-    //로 검색된 점수 총합
-    var tosearchlen = tosearch.length
-    for (var i = 0; i < tosearchlen; i++) { //첫번째면 정의
-        if (i == 0) {
-            var scores = []
-            scores = search(tosearch[0])
-        }
-        else {
-            var serres = search(tosearch[i])
-            for (var j = 0, len = scores.length; j < len; j++)
-                scores[j] = Math.max(serres[j], scores[j])
-        }
-    }
-    //정렬후 출력
+    // 정렬후 출력
     var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
     var outputlist = [['단어', '점수']]
-    var words = document.getElementById("freqcheck").checked ? getfile("freq") : getfile("all")
+    var words = document.getElementById("freqcheck").checked ? getfile("freq")[0] : getfile("all")[0]
     for (var i = 0; i < 100; i++) {
         var word = ('' + words[result[i]]).replace(/[ \tE]/g, '')
         word = Hangul.assemble(word)
@@ -75,20 +62,17 @@ function redir() {
     var redinp = document.getElementById("input").value
     location.href = '/search?key=' + redinp + "\&freq=" + document.getElementById("freqcheck").checked
 }
-function getParameter(name) {   
+function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-function possiblepron(input) {
-    input = input.replace(/ ?/g, '\t').trim()
-    //텍    스    트
-    disassemed = Hangul.disassemble(input).join().replace(/,/g, ' ')
-    disassemed = disassemed.split('\t')
-    //['ㅌ ㅔ ㄱ ', ' ㅅ ㅡ ', ' ㅌ ㅡ']
-    disassemed = disassemed.join('\t')
-    //한글 라이브러리 결과값 수정
+function korformatter(commonkor) {
+    //가나다
+    commonkor = commonkor.replace(/ ?/g, '\t').trim()
+    //가\t나\t다
+    disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').trim()
     disassemed = disassemed.replace(/ㅗ ㅏ/g, 'ㅘ')
     disassemed = disassemed.replace(/ㅗ ㅐ/g, 'ㅙ')
     disassemed = disassemed.replace(/ㅗ ㅣ/g, 'ㅚ')
@@ -115,53 +99,142 @@ function possiblepron(input) {
         }
     }
     disassemed = disassemed.join('\t')
-    var i = 0;
-    var result = pronrecursive(i, disassemed)
-    result = result.replace(/A/g, '\t').replace(/B/g, ' ').split('\n')
-    result = result.filter(onlyUnique)
-    if (result.length >= 8) {
-
-        if (!confirm("검색 시간이 오래 걸릴 수 있는 검색어입니다.\n그래도 검색하시겠습니까?")) {
-            return 'N'
-        }
+    return disassemed
+}
+function betterDisassemble(input) {
+    var inlen = input.length
+    var out = ''
+    if(inlen<=10)
+    {
+        return Hangul.disassemble(input).join('')
     }
-    return result
+    for (var i = 0; i < inlen - 10; i += 10) {
+        var sub = Hangul.disassemble(input.substring(i, i + 10)).join('')
+        out += sub
+    }
+    var fin = Hangul.disassemble(input.substring(Math.floor(inlen / 10) * 10, inlen)).join('')
+    out += fin
+    return out
+}
+function stdpron(a) {
+    var a = korformatter(a)
+    //모음 한단어에 하나로
+    a = a.replace(/ㅑ/g, 'ㅣ E\tㅇ ㅏ')
+    a = a.replace(/ㅕ/g, 'ㅣ E\tㅇ ㅓ')
+    a = a.replace(/ㅛ/g, 'ㅣ E\tㅇ ㅗ')
+    a = a.replace(/ㅠ/g, 'ㅣ E\tㅇ ㅜ')
+    a = a.replace(/ㅒ/g, 'ㅣ E\tㅇ ㅐ')
+    a = a.replace(/ㅖ/g, 'ㅣ E\tㅇ ㅔ')
+    a = a.replace(/ㅘ/g, 'ㅗ E\tㅇ ㅏ')
+    a = a.replace(/ㅙ/g, 'ㅗ E\tㅇ ㅐ')
+    a = a.replace(/ㅚ/g, 'ㅜ E\tㅇ ㅔ')
+    a = a.replace(/ㅝ/g, 'ㅜ E\tㅇ ㅓ')
+    a = a.replace(/ㅞ/g, 'ㅜ E\tㅇ ㅔ')
+    a = a.replace(/ㅟ/g, 'ㅜ E\tㅇ ㅣ')
+    a = a.replace(/ㅢ/g, 'ㅡ E\tㅇ ㅣ')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
+    a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) E\tㅇ \1/g, '$1')
+
+    //사이시옷(모든 시옷을 사이시옷으로 생각)
+    a = a.replace(/ㅅ\t(.) ㅣ/g, 'ㄴ\t$1 ㅣ')
+    a = a.replace(/ㅅ\t[ㄴㅁ]/g, 'ㅅ\tㄴ')
+    a = a.replace(/ㅅ\tㄱ/g, 'E\tㄲ')
+    a = a.replace(/ㅅ\tㄷ/g, 'E\tㄸ')
+    a = a.replace(/ㅅ\tㅂ/g, 'E\tㅃ')
+    a = a.replace(/ㅅ\tㅅ/g, 'E\tㅆ')
+    a = a.replace(/ㅅ\tㅈ/g, 'E\tㅉ')
+
+    //된소리되기(어간생각X)
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㄱ/g, '$1\tㄲ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㄷ/g, '$1\tㄸ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅂ/g, '$1\tㅃ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅅ/g, '$1\tㅆ')
+    a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])\tㅈ/g, '$1\tㅉ')
+
+    //동화
+    a = a.replace(/ㄴ\tㄹ/g, 'ㄹ\tㄹ')
+    a = a.replace(/ㄹ\tㄴ/g, 'ㄹ\tㄹ')
+    a = a.replace(/ㅀ\tㄴ/g, 'ㄹ\tㄹ')
+    a = a.replace(/ㄾ\tㄴ/g, 'ㄹ\tㄹ')
+    a = a.replace(/([ㅁㅇ])\tㄹ/g, '$1\tㄴ')
+    a = a.replace(/ㄱ\tㄹ/g, 'ㅇ\tㄴ')
+    a = a.replace(/ㅂ\tㄹ/g, 'ㅁ\tㄴ')
+    a = a.replace(/[ㄱㄲㅋㄳㄺ]\t([ㄴㅁ])/g, 'ㅇ\t$1')
+    a = a.replace(/[ㄷㅅㅆㅈㅊㅌㅎ]\t([ㄴㅁ])/g, 'ㄴ\t$1')
+    a = a.replace(/[ㅂㅍㄼㄿㅄ]\t([ㄴㅁ])/g, 'ㅁ\t$1')
+
+    //받침의 발음
+    a = a.replace(/([ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅋㅌㅍㄲㅆ])\tㅇ/g, 'E\t$1')
+    a = a.replace(/ㄳ\tㅇ/g, 'ㄱ\tㅆ')
+    a = a.replace(/ㄵ\tㅇ/g, 'ㄴ\tㅈ')
+    a = a.replace(/ㄶ\tㅇ/g, 'ㄴ\tㅇ')
+    a = a.replace(/ㄺ\tㅇ/g, 'ㄹ\tㄱ')
+    a = a.replace(/ㄻ\tㅇ/g, 'ㄹ\tㅁ')
+    a = a.replace(/ㄼ\tㅇ/g, 'ㄹ\tㅂ')
+    a = a.replace(/ㄽ\tㅇ/g, 'ㄹ\tㅆ')
+    a = a.replace(/ㄾ\tㅇ/g, 'ㄹ\tㅌ')
+    a = a.replace(/ㄿ\tㅇ/g, 'ㄹ\tㅍ')
+    a = a.replace(/ㅀ\tㅇ/g, 'ㄹ\tㅇ')
+    a = a.replace(/ㅄ\tㅇ/g, 'ㅂ\tㅆ')
+    a = a.replace(/ㅎ\tㄴ/g, 'ㄴ\tㄴ')
+    a = a.replace(/([ㅎㄶㅀ])\tㅅ/g, '$1\tㅆ')
+    a = a.replace(/([ㅎㄶㅀ])\tㄱ/g, '$1\tㅋ')
+    a = a.replace(/([ㅎㄶㅀ])\tㄷ/g, '$1\tㅌ')
+    a = a.replace(/([ㅎㄶㅀ])\tㅈ/g, '$1\tㅊ')
+    a = a.replace(/([ㄱㄺ])\tㅎ/g, 'E\tㅋ')
+    a = a.replace(/([ㄷ])\tㅎ/g, 'E\tㅊ')
+    a = a.replace(/([ㅂㄼ])\tㅎ/g, 'E\tㅍ')
+    a = a.replace(/([ㅈㄵ])\tㅎ/g, 'E\tㅊ')
+    a = a.replace(/([ㅅㅈㅊㅌ])\tㅎ/g, 'E\tㅌ')
+
+    //7종성예외
+    a = a.replace(/ㅂ ㅏ ㄼ/g, 'ㅂ ㅏ ㅂ')
+    a = a.replace(/ㄴ ㅓ ㄼ/g, 'ㄴ ㅓ ㅂ')
+
+    //7종성
+    a = a.replace(/[ㄲㅋㄳㄺ]\t/g, 'ㄱ\t')
+    a = a.replace(/[ㄵ]\t/g, 'ㄴ\t')
+    a = a.replace(/[ㅅㅆㅈㅊㅌ]\t/g, 'ㄷ\t')
+    a = a.replace(/[ㄼㄽㄾ]\t/g, 'ㄹ\t')
+    a = a.replace(/[ㄻ]\t/g, 'ㅁ\t')
+    a = a.replace(/[ㅍㅄ]\t/g, 'ㅂ\t')
+    a = a.replace(/[ㄿ]\t/g, 'ㅇ\t')
+
+    a = a.replace(/ㅎ\t/g, 'E\t')
+
+    //규정에 없지만 자율적으로
+    a = a.replace(/([ㄴ])\tㅎ/g, 'E\tㄴ')
+    a = a.replace(/([ㄹ])\tㅎ/g, 'E\tㄹ')
+    a = a.replace(/([ㅁ])\tㅎ/g, 'E\tㅁ')
+    a = a.replace(/([ㅇ])\tㅎ/g, 'ㅇ\tㅇ')
+    return a;
 }
 function onlyUnique(value, index, self) {
     var vallen = value.split('\t').length
     return (self.indexOf(value) === index) && (inputlen + 2 >= vallen);
 }
-function pronrecursive(i, text) {
-    var from = ['ㅏ E\tㅇ ㅏ', 'ㅓ E\tㅇ ㅓ', 'ㅣ E\tㅇ ㅣ', 'ㅗ E\tㅇ ㅗ', 'ㅜ E\tㅇ ㅜ', 'ㅡ E\tㅇ ㅡ', 'ㅐ E\tㅇ ㅐ', 'ㅔ E\tㅇ ㅔ', 'ㅣ E\tㅇ ㅏ', 'ㅣ E\tㅇ ㅓ', 'ㅣ E\tㅇ ㅗ', 'ㅣ E\tㅇ ㅜ', 'ㅣ E\tㅇ ㅐ', 'ㅣ E\tㅇ ㅔ', 'ㅗ E\tㅇ ㅏ', 'ㅗ E\tㅇ ㅐ', 'ㅗ E\tㅇ ㅔ', 'ㅜ E\tㅇ ㅓ', 'ㅜ E\tㅇ ㅔ', 'ㅜ E\tㅇ ㅣ', 'ㅡ E\tㅇ ㅣ', 'ㅏ E\tㅎ ㅏ', 'ㅓ E\tㅎ ㅓ', 'ㅣ E\tㅎ ㅣ', 'ㅗ E\tㅎ ㅗ', 'ㅜ E\tㅎ ㅜ', 'ㅡ E\tㅎ ㅡ', 'ㅐ E\tㅎ ㅐ', 'ㅔ E\tㅎ ㅔ', 'ㅣ E\tㅎ ㅏ', 'ㅣ E\tㅎ ㅓ', 'ㅣ E\tㅎ ㅗ', 'ㅣ E\tㅎ ㅜ', 'ㅣ E\tㅎ ㅐ', 'ㅣ E\tㅎ ㅔ', 'ㅗ E\tㅎ ㅏ', 'ㅗ E\tㅎ ㅐ', 'ㅗ E\tㅎ ㅔ', 'ㅜ E\tㅎ ㅓ', 'ㅜ E\tㅎ ㅔ', 'ㅜ E\tㅎ ㅣ', 'ㅡ E\tㅎ ㅣ', 'ㄱ\tㅎ', 'ㄷ\tㅎ', 'ㅂ\tㅎ', 'ㅈ\tㅎ', 'ㅎ\tㄱ', 'ㅎ\tㄷ', 'ㅎ\tㅂ', 'ㅎ\tㅈ', 'ㅑ ', 'ㅕ ', 'ㅛ ', 'ㅠ ', 'ㅒ ', 'ㅖ ', 'ㅘ ', 'ㅙ ', 'ㅚ ', 'ㅝ ', 'ㅞ ', 'ㅟ ', 'ㅢ ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ', '([ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉ])\tㅇ', 'ㄳ\tㅇ', 'ㄵ\tㅇ', 'ㄶ\tㅇ', 'ㄺ\tㅇ', 'ㄻ\tㅇ', 'ㄼ\tㅇ', 'ㄽ\tㅇ', 'ㄾ\tㅇ', 'ㄿ\tㅇ', 'ㅀ\tㅇ', 'ㅄ\tㅇ']
-    var to = ['ㅏ', 'ㅓ', 'ㅣ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅐ', 'ㅔ', 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅒ', 'ㅖ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅢ', 'ㅏ', 'ㅓ', 'ㅣ', 'ㅗ', 'ㅜ', 'ㅡ', 'ㅐ', 'ㅔ', 'ㅑ', 'ㅕ', 'ㅛ', 'ㅠ', 'ㅒ', 'ㅖ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅢ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ', 'E\tㅋ', 'E\tㅌ', 'E\tㅍ', 'E\tㅊ', 'ㅣ E\tㅇ ㅏ ', 'ㅣ E\tㅇ ㅓ ', 'ㅣ E\tㅇ ㅗ ', 'ㅣ E\tㅇ ㅜ ', 'ㅣ E\tㅇ ㅐ ', 'ㅣ E\tㅇ ㅔ ', 'ㅗ E\tㅇ ㅏ ', 'ㅗ E\tㅇ ㅐ ', 'ㅗ E\tㅇ ㅔ ', 'ㅜ E\tㅇ ㅓ ', 'ㅜ E\tㅇ ㅔ ', 'ㅜ E\tㅇ ㅣ ', 'ㅡ E\tㅇ ㅣ ', 'ㄱ\tㅎ', 'ㄷ\tㅎ', 'ㅂ\tㅎ', 'ㅈ\tㅎ', 'ㅎ\tㄱ', 'ㅎ\tㄷ', 'ㅎ\tㅂ', 'ㅎ\tㅈ', 'E\t$1', 'ㄱ\tㅅ', 'ㄴ\tㅈ', 'ㄴ\tㅇ', 'ㄹ\tㄱ', 'ㄹ\tㅁ', 'ㄹ\tㅂ', 'ㄹ\tㅅ', 'ㄹ\tㅌ', 'ㄹ\tㅍ', 'ㄹ\tㅇ', 'ㅂ\tㅅ']
-    if (!text.includes(from[i]) && i >= (from.length - 1))
-        return text
-    else if (!text.includes(from[i]) && i < (from.length - 1)) {
-        i++;
-        return pronrecursive(i, text)
-    }
-    else if (text.includes(from[i])) {
-        var text1 = text.replace(from[i], from[i].replace('\t', 'A').replace(/ /, 'B'))
-        var nochange = pronrecursive(i, text1)
-        var text2 = text.replace(from[i], to[i])
-        var change = pronrecursive(i, text2)
-        return change + '\n' + nochange
-    }
-}
 function search(keyword) {
-    var wordslist = document.getElementById("freqcheck").checked ? getfile("freq") : getfile("all")
+    var wordslist = document.getElementById("freqcheck").checked ? getfile("freq")[1] : getfile("all")[1]
     var scores = []
     var len = wordslist.length
+    var ao = keyword.split('\t')
+    var aleno = ao.length
     for (var i = 0; i < len; i++) {
-        word = wordslist[i]
-        a = keyword.split('\t')
-        b = word.split('\t')
-        var originblen = b.length
-        var alen = a.length
-        if (alen > originblen)
-            [a, b] = [b, a]
-        // a > b
-        b = b.slice(-alen)
+        var a = ao //입력 단어 발음
+        var alen = aleno //길이
+        b = wordslist[i].split('\t')// 비교할 단어 발음
+        var blen = b.length //길이
+        if (alen < blen){
+            b = b.slice(-alen)
+            blen=alen
+        }
+        else{
+            a = a.slice(-blen)
+            alen=blen
+        }
+        //마지막에 alen개 자름
         var score = 0
         var asplit
         var bsplit
@@ -180,11 +253,11 @@ function search(keyword) {
                 force2 = 1
             score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
             score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1)
-            var rel2= relevance2(asplit[2], bsplit[2], force2)
-            score += rel2 * (j == (alen - 1) ? rel2>=2 ? 10 : 1.5 : 1)
+            var rel2 = relevance2(asplit[2], bsplit[2], force2)
+            score += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1)
         }
         score = Math.max(score, 0)
-        score /= Math.max(alen, originblen)
+        score /= aleno
         scores.push(score)
     }
     return scores
@@ -193,8 +266,8 @@ function relevance0(a, b, force) {
     if (force == 1 && a != b) return -10000;
     if (a == 'ㅇ' && b == 'ㅇ') return 6;
     if (a == b) return 5;
-    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㄴㅁ']
-    var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ','ㅇㅎ']
+    var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ']
+    var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㅇㅎ', 'ㄴㄹㅁ']
     if (arebothin(a, b, similar)) return 3;
     if (arebothin(a, b, ssimilar)) return 1;
     else return 0;
@@ -202,11 +275,9 @@ function relevance0(a, b, force) {
 function relevance1(a, b) {
     if (a == b) return 40;
     var same = ['ㅙㅚㅞ', 'ㅔㅐ']
-    var similar = ['ㅜㅠ', 'ㅘㅏㅑ', 'ㅝㅓㅕㅗㅛ', 'ㅟㅢㅣ', 'ㅚㅙㅞㅐㅔㅖㅒ']
-    var ssimilar = ['ㅏㅓㅗㅜㅐㅔ','ㅑㅕㅛㅠㅒㅖ']
+    var similar = ['ㅏㅘ','ㅓㅝㅗ','ㅕㅛ','ㅜㅡ','ㅣㅟㅢ','ㅐㅔㅙㅞㅚ','ㅒㅖ']
     if (arebothin(a, b, same)) return 40;
     else if (arebothin(a, b, similar)) return 35;
-    else if (arebothin(a, b, ssimilar)) return 8;
     else return 0;
 }
 function relevance2(a, b, force) {
@@ -214,7 +285,7 @@ function relevance2(a, b, force) {
     if (a == 'E' && b == 'E') return 3;
     if (a == b) return 2;
     var same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
-    var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄼㄽㄾㄹㅀㄻㅁㅇ']
+    var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄻㅁㅇ']
     if (arebothin(a, b, same)) return 2;
     else if (arebothin(a, b, similar)) return 1;
     else return 0;
@@ -244,13 +315,24 @@ function getfile(fileName) {
     var oFrame = document.getElementById(fileName);
     var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
     while (strRawContents.indexOf("\r") >= 0)
-        strRawContents = strRawContents.replace("\r", "");
+        strRawContents = strRawContents.replace(/\r/g, "");
     var arrLines = strRawContents.split("\n");
-    return arrLines
+    var a = [], b = [], c = []
+    if (document.getElementById("freqcheck").checked) {
+        for (i of arrLines) {
+            splitted = i.split(',')
+            a.push(splitted[0])
+            b.push(splitted[1])
+        }
+        return [a,b]
+    }
+    else {
+        for (i of arrLines) {
+            splitted = i.split(',')
+            a.push(splitted[0])
+            b.push(splitted[1])
+            c.push(splitted[2])
+        }
+        return [a,b,c]
+    }
 }
-
-
-
-
-
-
