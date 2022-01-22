@@ -2,7 +2,12 @@ var inputlen
 function initinput() {
     document.getElementById("input").value = getParameter("key")
     document.getElementById("freqcheck").checked = (getParameter("freq") == "true")
-    if(getParameter("key")=='') location.href = '/'
+    if (getParameter("key") == '') location.href = '/'
+    setInterval(() => {
+        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+            loadmore()//TODO
+        }
+    }, 500);
 }
 function buttonclick() {
     var input = getParameter("key")
@@ -10,7 +15,7 @@ function buttonclick() {
     input = input.replace(/[^가-힣]/, '') //자동 제외후
     var tosearch = stdpron(input)
     var scores = search(tosearch)
-    
+
 
     // 정렬후 출력
     var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
@@ -23,7 +28,8 @@ function buttonclick() {
     document.getElementById('tbcen')
         .appendChild(populateTable(null, outputlist.length, outputlist[0].length, outputlist));
 
-        document.getElementById('loading').style.display = 'none'
+    document.getElementById('loading').style.display = 'none'
+    document.getElementById('scrollload').style.display = 'block'
 }
 
 function populateTable(table, rows, cells, content) {
@@ -103,8 +109,7 @@ function korformatter(commonkor) {
 function betterDisassemble(input) {
     var inlen = input.length
     var out = ''
-    if(inlen<=10)
-    {
+    if (inlen <= 10) {
         return Hangul.disassemble(input).join('')
     }
     for (var i = 0; i < inlen - 10; i += 10) {
@@ -223,15 +228,15 @@ function search(keyword) {
     for (var i = 0; i < len; i++) {
         var a = ao //입력 단어 발음
         var alen = aleno //길이
-        b = (wordslist[i]||'').split('L')// 비교할 단어 발음
+        b = (wordslist[i] || '').split('L')// 비교할 단어 발음
         var blen = b.length //길이
-        if (alen < blen){
+        if (alen < blen) {
             b = b.slice(-alen)
-            blen=alen
+            blen = alen
         }
-        else{
+        else {
             a = a.slice(-blen)
-            alen=blen
+            alen = blen
         }
         //마지막에 alen개 자름
         var score = 0
@@ -273,7 +278,7 @@ function relevance0(a, b, force) {
 function relevance1(a, b) {
     if (a == b) return 40;
     var same = ['ㅙㅚㅞ', 'ㅔㅐ']
-    var similar = ['ㅏㅘ','ㅓㅝㅗ','ㅕㅛ','ㅜㅡ','ㅣㅟㅢ','ㅐㅔㅙㅞㅚ','ㅒㅖ']
+    var similar = ['ㅏㅘ', 'ㅓㅝㅗ', 'ㅕㅛ', 'ㅜㅡ', 'ㅣㅟㅢ', 'ㅐㅔㅙㅞㅚ', 'ㅒㅖ']
     if (arebothin(a, b, same)) return 40;
     else if (arebothin(a, b, similar)) return 35;
     else return 0;
@@ -322,7 +327,7 @@ function getfile(fileName) {
             a.push(splitted[0])
             b.push(splitted[1])
         }
-        return [a,b]
+        return [a, b]
     }
     else {
         for (i of arrLines) {
@@ -331,7 +336,7 @@ function getfile(fileName) {
             b.push(splitted[1])
             c.push(splitted[2])
         }
-        return [a,b,c]
+        return [a, b, c]
     }
 }
 
@@ -340,5 +345,5 @@ function getfile(fileName) {
 function databasemaker(filename) {
     var oFrame = document.getElementById(filename);
     var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
-    console.log(stdpron(strRawContents.replace(/\n/g,'A')).replace(/A/g,'\n').replace(/^L/gm,'').replace(/L$/gm,''))
+    console.log(stdpron(strRawContents.replace(/\n/g, 'A')).replace(/A/g, '\n').replace(/^L/gm, '').replace(/L$/gm, ''))
 }
