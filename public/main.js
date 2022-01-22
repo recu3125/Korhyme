@@ -3,10 +3,33 @@ var resultssaved = []
 var wordssaved = []
 var scoressaved = []
 var resultsnowshown = 0
+//복붙코드
+mybutton = document.getElementById("myBtn");
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+function topFunction() {
+  document.body.scrollTop = 0; // For Safari
+  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+//요기까지
+function selectorchange() {
+    var selectorarr = [
+        '<b>빠름</b> : 빠른 검색, 적은 값',
+        '<b>보통</b> : 기본 검색, 보통 값',
+        '<b>다양</b> : 느린 검색, 많은 값']
+    document.getElementById('selectorlabel').innerHTML = selectorarr[document.getElementById('selector').value]
+}
 function initinput() {
     document.getElementById("input").value = getParameter("key")
-    document.getElementById("freqcheck").checked = (getParameter("freq") == "true")
+    document.getElementById('selector').value = getParameter("sel")
     if (getParameter("key") == '') location.href = '/'
+    selectorchange()
 }
 function buttonclick() {
     var input = getParameter("key")
@@ -19,7 +42,7 @@ function buttonclick() {
     // 정렬후 출력
     var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
     var outputlist = [['단어', '점수']]
-    var words = document.getElementById("freqcheck").checked ? getfile("freq")[0] : getfile("all")[0]
+    var words = getfile(document.getElementById('selector').value)[0]
     for (var i = 0; i < 50; i++) {
         var word = ('' + words[result[i]])
         outputlist.push([word, Math.round(scores[result[i]] * 4)])
@@ -91,7 +114,7 @@ function populateTable(table, rows, cells, content) {
 }
 function redir() {
     var redinp = document.getElementById("input").value
-    location.href = '/search?key=' + redinp + "\&freq=" + document.getElementById("freqcheck").checked
+    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value
 }
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -246,7 +269,7 @@ function onlyUnique(value, index, self) {
     return (self.indexOf(value) === index) && (inputlen + 2 >= vallen);
 }
 function search(keyword) {
-    var wordslist = document.getElementById("freqcheck").checked ? getfile("freq")[1] : getfile("all")[1]
+    var wordslist = getfile(document.getElementById('selector').value)[1]
     var scores = []
     var len = wordslist.length
     var ao = keyword.split('L')
@@ -340,30 +363,21 @@ function arebothin(a, b, arr2d) {
     }
     return 0;
 }
-function getfile(fileName) {
-    var oFrame = document.getElementById(fileName);
-    var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
-    while (strRawContents.indexOf("\r") >= 0)
-        strRawContents = strRawContents.replace(/\r/g, "");
-    var arrLines = strRawContents.split("\n");
-    var a = [], b = [], c = []
-    if (document.getElementById("freqcheck").checked) {
-        for (i of arrLines) {
-            splitted = i.split('\t')
+function getfile(selectednum) {
+    var a = [], b = []
+    for (i = 0; i <= selectednum; i++) {
+        var oFrame = document.getElementById('' + i);
+        var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;
+        while (strRawContents.indexOf("\r") >= 0)
+            strRawContents = strRawContents.replace(/\r/g, "");
+        var arrLines = strRawContents.split("\n");
+        for (j of arrLines) {
+            splitted = j.split('\t')
             a.push(splitted[0])
             b.push(splitted[1])
         }
-        return [a, b]
     }
-    else {
-        for (i of arrLines) {
-            splitted = i.split('\t')
-            a.push(splitted[0])
-            b.push(splitted[1])
-            c.push(splitted[2])
-        }
-        return [a, b, c]
-    }
+    return [a, b]
 }
 
 //기능 외, 데이터베이스 제작용 함수 TODO
