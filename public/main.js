@@ -1,13 +1,12 @@
 var inputlen
+var resultssaved = []
+var wordssaved = []
+var scoressaved = []
+var resultsnowshown = 0
 function initinput() {
     document.getElementById("input").value = getParameter("key")
     document.getElementById("freqcheck").checked = (getParameter("freq") == "true")
     if (getParameter("key") == '') location.href = '/'
-    setInterval(() => {
-        if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-            loadmore()//TODO
-        }
-    }, 500);
 }
 function buttonclick() {
     var input = getParameter("key")
@@ -21,17 +20,44 @@ function buttonclick() {
     var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => +e[0]).reverse()
     var outputlist = [['단어', '점수']]
     var words = document.getElementById("freqcheck").checked ? getfile("freq")[0] : getfile("all")[0]
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 50; i++) {
         var word = ('' + words[result[i]])
         outputlist.push([word, Math.round(scores[result[i]] * 4)])
     }
+    resultssaved = result
+    wordssaved = words
+    scoressaved = scores
     document.getElementById('tbcen')
         .appendChild(populateTable(null, outputlist.length, outputlist[0].length, outputlist));
 
     document.getElementById('loading').style.display = 'none'
     document.getElementById('scrollload').style.display = 'block'
-}
 
+    setInterval(() => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            resultsnowshown += 50
+            var table = document.getElementById("tbl")
+            for (var i = resultsnowshown; i < resultsnowshown + 50; ++i) {
+                var row = document.createElement('tr');
+                var word = ('' + wordssaved[resultssaved[i]])
+
+                row.appendChild(document.createElement('td'));
+                row.cells[0].appendChild(document.createTextNode(word));
+                row.appendChild(document.createElement('td'));
+                row.cells[1].appendChild(document.createTextNode(Math.round(scoressaved[resultssaved[i]] * 4)));
+
+                if (i % 2 == 0)
+                    row.style.backgroundColor = '#FFFFFF';
+                else
+                    row.style.backgroundColor = '#BBBBBB';
+                row.style.border = '2px solid black'
+                row.style.text_align = 'center'
+                row.style.box_sizing = 'border-box'
+                table.appendChild(row);
+            }
+        }
+    }, 100);
+}
 function populateTable(table, rows, cells, content) {
     document.getElementById("tbl").remove()
     if (!table) table = document.createElement('table');

@@ -6,22 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=800, initial-scale=0.5">
     <title>korhyme</title>
+    <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+
 </head>
 
 <body onload="buttonclick()"
-    style="background: linear-gradient(60deg, #f5c12f,#ffdc7b); height:100%; background-attachment: fixed; color: black; font-size: 14pt;">
-    <div id="loading" style="height: 100%; width: 100%; position: fixed; z-index: 1; left: 0; top: 0; color:black; background-color: rgba(0,0,0,0.6); overflow-x: hidden; text-align: center; font-size: 40pt;">
+    style="margin-bottom: 0px;background: linear-gradient(60deg, #f5c12f,#ffdc7b); height:100%; background-attachment: fixed; color: black; font-size: 14pt;">
+    <div id="loading"
+        style="height: 100%; width: 100%; position: fixed; z-index: 1; left: 0; top: 0; color:black; background-color: rgba(0,0,0,0.6); overflow-x: hidden; text-align: center; font-size: 40pt;">
         <center>
-            <img src="https://i.ibb.co/dBPBxv5/output-onlinegiftools-1.gif" alt="9s-265px-unscreen" border="0"  style="margin-top: 30vh;">
-            <p id="percent" style="margin-top: 0px; color:#f5c12f;font-size: 30pt;">불러오는 중...</p> 
+            <img src="https://i.ibb.co/dBPBxv5/output-onlinegiftools-1.gif" alt="9s-265px-unscreen" border="0"
+                style="margin-top: 30vh;">
+            <p id="percent" style="margin-top: 0px; color:#f5c12f;font-size: 30pt;">불러오는 중...</p>
         </center>
     </div>
     <center>
-        <p style="font-size: 40pt;font-family: 'Gugi', cursive;margin-bottom: 0px;">한국어 라임 검색기</p>
-        <p style="margin-bottom: 30px;">한국어 라임 검색기</p>
+        <p style="font-size: 60pt;font-family: 'Gugi', cursive;margin-bottom: 0px;">Korhyme</p>
+        <p style="margin-bottom: 30px;font-family: 'Gugi', cursive;font-size: 20pt;">한국어 라임 검색기</p>
         <hr style="width: 600px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
         <div id="div1"
             style="overflow:auto ;border-radius: 4px;width:500px; height: 100%; background-color: #00000033; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
@@ -29,20 +33,23 @@
             <script src="./main.js"></script>
             <iframe id="all" src="korean.txt" style="display: none;"></iframe>
             <iframe id="freq" src="freq.txt" style="display: none;"></iframe>
-            <div style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 30px">
+            <div
+                style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 30px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
                 <input id="input" size='    ' maxlength='60' type="text"
-                    style="border: solid 2px black;height: 45px; width: 440px; font-size: 20pt; float: left;"
+                    style="border: solid 2px #1ca7a0;height: 45px; width: 437px; font-size: 20pt; float: left;"
                     onkeypress="if( event.keyCode == 13 ){redir()}">
                 <button id="search"
-                    style="border-radius: 10px; height: 50px;width: 50px;float: right;background-image: url('https://i.ibb.co/QnNMXfK/iconmonstr-magnifier-2-240.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
+                    style="border: solid 3px #1ca7a0; background-color: #1ca7a0;border-radius: 0px; height: 50px;width: 50px;float: left;background-image: url('https://i.ibb.co/SBrgyXM/search-13-xxl.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
                     onclick="redir()">
                 </button>
             </div>
-            <label style="font-size: 20px;"><input id="freqcheck" type="checkbox" checked style="width: 20px; height: 20px;">사용 빈도가 높은 단어 내에서만 검색(속도 향상)</label>
+            <label style="font-size: 20px;"><input id="freqcheck" type="checkbox" checked
+                    style="width: 20px; height: 20px;">사용 빈도가 높은 단어 내에서만 검색(속도 향상)</label>
             <center id="tbcen">
                 <table id="tbl"></table>
             </center>
-            <img id="scrollload" src="https://i.ibb.co/GkJDyJ5/output-onlinegiftools.gif" alt="9s-265px-unscreen" border="0"  style="margin-top: 0px; display: none;">
+            <img id="scrollload" src="https://i.ibb.co/GkJDyJ5/output-onlinegiftools.gif" alt="9s-265px-unscreen"
+                border="0" style="margin-top: 0px; display: none; width: 200px; height: 70px; object-fit: cover;">
         </div>
     </center>
     <script>initinput();</script>
