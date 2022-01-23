@@ -3,19 +3,75 @@ var resultssaved = []
 var wordssaved = []
 var scoressaved = []
 var resultsnowshown = 0
+var islight = 1
+function darktgl() {
+    if (islight == 1) {
+        islight = 0
+        document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
+        document.getElementById('backgr').style.background = "linear-gradient(60deg, #072320,#093330)"
+        document.getElementById('backgr').style.color = "#FFFFFF"
+        document.getElementById('topbar').style.backgroundColor = '#334444'
+        document.getElementById('hr').style.backgroundColor = '#f5c12f'
+        document.getElementById('hr').style.border = 'solid 3px #f5c12f'
+        document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
+        document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
+        document.getElementById('input').style.border = 'solid 2px #f5c12f'
+        document.getElementById('input').style.backgroundColor = 'solid 2px #072320'
+        document.getElementById('input').style.color = 'solid 2px #FFFFFF'
+        document.getElementById('search').style.border = 'solid 3px #f5c12f'
+        document.getElementById('search').style.backgroundColor = '#f5c12f'
+        document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
+        document.getElementById("selector").className = 'sliderdark'
+        var rowCount = document.getElementById('tbl').rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            if (i % 2 == 0)
+                document.getElementById("tbl").rows[i].style.backgroundColor = '#222222';
+            else
+                document.getElementById("tbl").rows[i].style.backgroundColor = '#111111';
+            document.getElementById("tbl").rows[i].style.color = '#FFFFFF';
+        }
+    }
+    else {
+        islight = 1
+        document.getElementById('darktgl').style.backgroundColor = "#000000"
+        document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
+        document.getElementById('backgr').style.color = "#000000"
+        document.getElementById('topbar').style.backgroundColor = '#777766'
+        document.getElementById('hr').style.backgroundColor = '#1ca7a0'
+        document.getElementById('hr').style.border = 'solid 3px #1ca7a0'
+        document.getElementById('inputdiv').style.border = 'solid 3px #1ca7a0'
+        document.getElementById('inputdiv').style.backgroundColor = '#1ca7a0'
+        document.getElementById('input').style.border = 'solid 2px #1ca7a0'
+        document.getElementById('input').style.backgroundColor = 'solid 2px #FFFFFF'
+        document.getElementById('input').style.color = 'solid 2px #000000'
+        document.getElementById('search').style.border = 'solid 3px #1ca7a0'
+        document.getElementById('search').style.backgroundColor = '#1ca7a0'
+        document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
+        document.getElementById("selector").className = 'slider'
+        var rowCount = document.getElementById('tbl').rows.length;
+        for (var i = 1; i < rowCount; i++) {
+            if (i % 2 == 0)
+                document.getElementById("tbl").rows[i].style.backgroundColor = '#FFFFFF';
+            else
+                document.getElementById("tbl").rows[i].style.backgroundColor = '#DDDDDD';
+            document.getElementById("tbl").rows[i].style.color = '#000000';
+        }
+    }
+}
+
 //복붙코드
 mybutton = document.getElementById("myBtn");
-window.onscroll = function() {scrollFunction()};
+window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    mybutton.style.display = "block";
-  } else {
-    mybutton.style.display = "none";
-  }
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+    } else {
+        mybutton.style.display = "none";
+    }
 }
 function topFunction() {
-  document.body.scrollTop = 0; // For Safari
-  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 //요기까지
 function selectorchange() {
@@ -69,10 +125,19 @@ function buttonclick() {
                 row.appendChild(document.createElement('td'));
                 row.cells[1].appendChild(document.createTextNode(Math.round(scoressaved[resultssaved[i]] * 4)));
 
-                if (i % 2 == 0)
-                    row.style.backgroundColor = '#FFFFFF';
-                else
-                    row.style.backgroundColor = '#DDDDDD';
+                if (islight) {
+                    if (i % 2 == 0)
+                        row.style.backgroundColor = '#FFFFFF';
+                    else
+                        row.style.backgroundColor = '#DDDDDD';
+                }
+                else {
+                    if (i % 2 == 0)
+                        row.style.backgroundColor = '#222222';
+                    else
+                        row.style.backgroundColor = '#111111';
+                    row.style.color = '#FFFFFF';
+                }
                 row.style.border = '2px solid black'
                 row.style.text_align = 'center'
                 row.style.box_sizing = 'border-box'
@@ -96,15 +161,28 @@ function populateTable(table, rows, cells, content) {
             row.appendChild(document.createElement('td'));
             row.cells[j].appendChild(document.createTextNode(content[i][j]));
         }
-        if (i == 0) {
-            row.style.backgroundColor = '#1ca7a0';
-            row.style.color = '#FFFFFF';
+        if (islight) {
+            if (i == 0) {
+                row.style.backgroundColor = '#1ca7a0';
+                row.style.color = '#FFFFFF';
 
+            }
+            else if (i % 2 == 0)
+                row.style.backgroundColor = '#FFFFFF';
+            else
+                row.style.backgroundColor = '#DDDDDD';
         }
-        else if (i % 2 == 0)
-            row.style.backgroundColor = '#FFFFFF';
-        else
-            row.style.backgroundColor = '#DDDDDD';
+        else {
+            if (i == 0) {
+                row.style.backgroundColor = '#f5c12f';
+                row.style.color = '#FFFFFF';
+            }
+            if (i % 2 == 0)
+                row.style.backgroundColor = '#333322';
+            else
+                row.style.backgroundColor = '#222211';
+            row.style.color = '#FFFFFF';
+        }
         row.style.border = '2px solid black'
         row.style.text_align = 'center'
         row.style.box_sizing = 'border-box'
