@@ -4,57 +4,65 @@ var wordssaved = []
 var scoressaved = []
 var resultsnowshown = 0
 var islight = 1
+function isavailable(id)
+{
+    return document.getElementById('darktgl') !== null&&document.getElementById('darktgl') !== undefined
+}
 function darktgl() {
     if (islight == 1) {
         islight = 0
-        document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
-        document.getElementById('backgr').style.background = "linear-gradient(60deg, #072320,#093330)"
-        document.getElementById('backgr').style.color = "#FFFFFF"
-        document.getElementById('topbar').style.backgroundColor = '#334444'
-        document.getElementById('hr').style.backgroundColor = '#f5c12f'
-        document.getElementById('hr').style.border = 'solid 3px #f5c12f'
-        document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
-        document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
-        document.getElementById('input').style.border = 'solid 2px #f5c12f'
-        document.getElementById('input').style.backgroundColor = 'solid 2px #072320'
-        document.getElementById('input').style.color = 'solid 2px #FFFFFF'
-        document.getElementById('search').style.border = 'solid 3px #f5c12f'
-        document.getElementById('search').style.backgroundColor = '#f5c12f'
-        document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
-        document.getElementById("selector").className = 'sliderdark'
-        var rowCount = document.getElementById('tbl').rows.length;
-        for (var i = 1; i < rowCount; i++) {
-            if (i % 2 == 0)
-                document.getElementById("tbl").rows[i].style.backgroundColor = '#222222';
-            else
-                document.getElementById("tbl").rows[i].style.backgroundColor = '#111111';
-            document.getElementById("tbl").rows[i].style.color = '#FFFFFF';
+        if (isavailable(darktgl)) document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
+        if (isavailable(backgr)) document.getElementById('backgr').style.background = "linear-gradient(60deg, #031310,#041515)"
+        if (isavailable(backgr)) document.getElementById('backgr').style.color = "#FFFFFF"
+        if (isavailable(topbar)) document.getElementById('topbar').style.backgroundColor = '#334444'
+        if (isavailable(hr)) document.getElementById('hr').style.backgroundColor = '#f5c12f'
+        if (isavailable(hr)) document.getElementById('hr').style.border = 'solid 3px #f5c12f'
+        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
+        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
+        if (isavailable(input)) document.getElementById('input').style.border = 'solid 2px #f5c12f'
+        if (isavailable(input)) document.getElementById('input').style.backgroundColor = 'solid 2px #031310'
+        if (isavailable(input)) document.getElementById('input').style.color = 'solid 2px #FFFFFF'
+        if (isavailable(search)) document.getElementById('search').style.border = 'solid 3px #f5c12f'
+        if (isavailable(search)) document.getElementById('search').style.backgroundColor = '#f5c12f'
+        if (isavailable(tbl)) document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
+        if (isavailable(selector)) document.getElementById("selector").className = 'sliderdark'
+        if (isavailable(tbl)) {
+            var rowCount = document.getElementById('tbl').rows.length;
+            for (var i = 1; i < rowCount; i++) {
+                if (i % 2 == 1)
+                    document.getElementById("tbl").rows[i].style.backgroundColor = '#222222';
+                else
+                    document.getElementById("tbl").rows[i].style.backgroundColor = '#111111';
+                document.getElementById("tbl").rows[i].style.color = '#FFFFFF';
+            }
         }
     }
     else {
         islight = 1
-        document.getElementById('darktgl').style.backgroundColor = "#000000"
-        document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
-        document.getElementById('backgr').style.color = "#000000"
-        document.getElementById('topbar').style.backgroundColor = '#777766'
-        document.getElementById('hr').style.backgroundColor = '#1ca7a0'
-        document.getElementById('hr').style.border = 'solid 3px #1ca7a0'
-        document.getElementById('inputdiv').style.border = 'solid 3px #1ca7a0'
-        document.getElementById('inputdiv').style.backgroundColor = '#1ca7a0'
-        document.getElementById('input').style.border = 'solid 2px #1ca7a0'
-        document.getElementById('input').style.backgroundColor = 'solid 2px #FFFFFF'
-        document.getElementById('input').style.color = 'solid 2px #000000'
-        document.getElementById('search').style.border = 'solid 3px #1ca7a0'
-        document.getElementById('search').style.backgroundColor = '#1ca7a0'
-        document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
-        document.getElementById("selector").className = 'slider'
-        var rowCount = document.getElementById('tbl').rows.length;
-        for (var i = 1; i < rowCount; i++) {
-            if (i % 2 == 0)
-                document.getElementById("tbl").rows[i].style.backgroundColor = '#FFFFFF';
-            else
-                document.getElementById("tbl").rows[i].style.backgroundColor = '#DDDDDD';
-            document.getElementById("tbl").rows[i].style.color = '#000000';
+        if (isavailable(darktgl)) document.getElementById('darktgl').style.backgroundColor = "#000000"
+        if (isavailable(backgr)) document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
+        if (isavailable(backgr)) document.getElementById('backgr').style.color = "#000000"
+        if (isavailable(topbar)) document.getElementById('topbar').style.backgroundColor = '#777766'
+        if (isavailable(hr)) document.getElementById('hr').style.backgroundColor = '#1ca7a0'
+        if (isavailable(hr)) document.getElementById('hr').style.border = 'solid 3px #1ca7a0'
+        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.border = 'solid 3px #1ca7a0'
+        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.backgroundColor = '#1ca7a0'
+        if (isavailable(input)) document.getElementById('input').style.border = 'solid 2px #1ca7a0'
+        if (isavailable(input)) document.getElementById('input').style.backgroundColor = 'solid 2px #FFFFFF'
+        if (isavailable(input)) document.getElementById('input').style.color = 'solid 2px #000000'
+        if (isavailable(search)) document.getElementById('search').style.border = 'solid 3px #1ca7a0'
+        if (isavailable(search)) document.getElementById('search').style.backgroundColor = '#1ca7a0'
+        if (isavailable(tbl)) document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
+        if (isavailable(selector)) document.getElementById("selector").className = 'slider'
+        if (isavailable(tbl)) {
+            var rowCount = document.getElementById('tbl').rows.length;
+            for (var i = 1; i < rowCount; i++) {
+                if (i % 2 == 1)
+                    document.getElementById("tbl").rows[i].style.backgroundColor = '#FFFFFF';
+                else
+                    document.getElementById("tbl").rows[i].style.backgroundColor = '#DDDDDD';
+                document.getElementById("tbl").rows[i].style.color = '#000000';
+            }
         }
     }
 }
@@ -63,10 +71,12 @@ function darktgl() {
 mybutton = document.getElementById("myBtn");
 window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        mybutton.style.display = "block";
-    } else {
-        mybutton.style.display = "none";
+    if (location.pathname.startsWith('/search')) {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
     }
 }
 function topFunction() {
@@ -82,15 +92,21 @@ function selectorchange() {
     document.getElementById('selectorlabel').innerHTML = selectorarr[document.getElementById('selector').value]
 }
 function initinput() {
+    var selectorarr = [
+        '<b>빠름</b> : 빠른 검색, 적은 값',
+        '<b>보통</b> : 기본 검색, 보통 값',
+        '<b>다양</b> : 느린 검색, 많은 값']
     document.getElementById("input").value = getParameter("key")
     document.getElementById('selector').value = getParameter("sel")
+    document.getElementById('selectorlabel').innerHTML = selectorarr[getParameter("sel")]
+    islight = (getParameter("dark"))==1?0:1
+    darktgl()
     if (getParameter("key") == '') location.href = '/'
-    selectorchange()
 }
 function buttonclick() {
     var input = getParameter("key")
     inputlen = input.length
-    input = input.replace(/[^가-힣]/, '') //자동 제외후
+    input = input.replace(/[^가-힣]/g, '') //자동 제외후
     var tosearch = stdpron(input)
     var scores = search(tosearch)
 
@@ -113,13 +129,12 @@ function buttonclick() {
     document.getElementById('scrollload').style.display = 'block'
 
     setInterval(() => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        if (location.pathname.startsWith('/search') && (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
             resultsnowshown += 50
             var table = document.getElementById("tbl")
             for (var i = resultsnowshown; i < resultsnowshown + 50; ++i) {
                 var row = document.createElement('tr');
                 var word = ('' + wordssaved[resultssaved[i]])
-
                 row.appendChild(document.createElement('td'));
                 row.cells[0].appendChild(document.createTextNode(word));
                 row.appendChild(document.createElement('td'));
@@ -167,7 +182,7 @@ function populateTable(table, rows, cells, content) {
                 row.style.color = '#FFFFFF';
 
             }
-            else if (i % 2 == 0)
+            else if (i % 2 == 1)
                 row.style.backgroundColor = '#FFFFFF';
             else
                 row.style.backgroundColor = '#DDDDDD';
@@ -177,10 +192,10 @@ function populateTable(table, rows, cells, content) {
                 row.style.backgroundColor = '#f5c12f';
                 row.style.color = '#FFFFFF';
             }
-            if (i % 2 == 0)
-                row.style.backgroundColor = '#333322';
+            else if (i % 2 == 1)
+                row.style.backgroundColor = '#222222';
             else
-                row.style.backgroundColor = '#222211';
+                row.style.backgroundColor = '#111111';
             row.style.color = '#FFFFFF';
         }
         row.style.border = '2px solid black'
@@ -192,7 +207,7 @@ function populateTable(table, rows, cells, content) {
 }
 function redir() {
     var redinp = document.getElementById("input").value
-    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value
+    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight)
 }
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

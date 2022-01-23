@@ -15,5 +15,9 @@ app.get('/search', (req, res) => {
   res.sendFile(__dirname + "/public/search.html")
 })
 
+app.get('/info', (req, res) => {
+  res.sendFile(__dirname + "/public/info.html")
+})
+
 
 app.use(express.static('public'))
