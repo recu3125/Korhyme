@@ -4,29 +4,36 @@ var wordssaved = []
 var scoressaved = []
 var resultsnowshown = 0
 var islight = 1
-function isavailable(id)
+function viewportset()
 {
-    return document.getElementById('darktgl') !== null&&document.getElementById('darktgl') !== undefined
+    var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+    if(width<600)
+    {
+        document.querySelector("meta[name=viewport]").setAttribute( 'content', 'width=device-width, initial-scale=' + Math.min(width/600,1));
+    }
+}
+function isavailable(id) {
+    return document.getElementById(id) !== null && document.getElementById(id) !== undefined
 }
 function darktgl() {
     if (islight == 1) {
         islight = 0
-        if (isavailable(darktgl)) document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
-        if (isavailable(backgr)) document.getElementById('backgr').style.background = "linear-gradient(60deg, #031310,#041515)"
-        if (isavailable(backgr)) document.getElementById('backgr').style.color = "#FFFFFF"
-        if (isavailable(topbar)) document.getElementById('topbar').style.backgroundColor = '#334444'
-        if (isavailable(hr)) document.getElementById('hr').style.backgroundColor = '#f5c12f'
-        if (isavailable(hr)) document.getElementById('hr').style.border = 'solid 3px #f5c12f'
-        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
-        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
-        if (isavailable(input)) document.getElementById('input').style.border = 'solid 2px #f5c12f'
-        if (isavailable(input)) document.getElementById('input').style.backgroundColor = 'solid 2px #031310'
-        if (isavailable(input)) document.getElementById('input').style.color = 'solid 2px #FFFFFF'
-        if (isavailable(search)) document.getElementById('search').style.border = 'solid 3px #f5c12f'
-        if (isavailable(search)) document.getElementById('search').style.backgroundColor = '#f5c12f'
-        if (isavailable(tbl)) document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
-        if (isavailable(selector)) document.getElementById("selector").className = 'sliderdark'
-        if (isavailable(tbl)) {
+        if (isavailable('darktgl')) document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
+        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(60deg, #021515,#042525)"
+        if (isavailable('backgr')) document.getElementById('backgr').style.color = "#FFFFFF"
+        if (isavailable('topbar')) document.getElementById('topbar').style.backgroundColor = '#334444'
+        if (isavailable('hr')) document.getElementById('hr').style.backgroundColor = '#f5c12f'
+        if (isavailable('hr')) document.getElementById('hr').style.border = 'solid 3px #f5c12f'
+        if (isavailable('inputdiv')) document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
+        if (isavailable('inputdiv')) document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
+        if (isavailable('input')) document.getElementById('input').style.border = 'solid 2px #f5c12f'
+        if (isavailable('input')) document.getElementById('input').style.backgroundColor = 'solid 2px #032320'
+        if (isavailable('input')) document.getElementById('input').style.color = 'solid 2px #FFFFFF'
+        if (isavailable('search')) document.getElementById('search').style.border = 'solid 3px #f5c12f'
+        if (isavailable('search')) document.getElementById('search').style.backgroundColor = '#f5c12f'
+        if (isavailable('tbl')) document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
+        if (isavailable('selector')) document.getElementById("selector").className = 'sliderdark'
+        if (isavailable('tbl')) {
             var rowCount = document.getElementById('tbl').rows.length;
             for (var i = 1; i < rowCount; i++) {
                 if (i % 2 == 1)
@@ -39,22 +46,22 @@ function darktgl() {
     }
     else {
         islight = 1
-        if (isavailable(darktgl)) document.getElementById('darktgl').style.backgroundColor = "#000000"
-        if (isavailable(backgr)) document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
-        if (isavailable(backgr)) document.getElementById('backgr').style.color = "#000000"
-        if (isavailable(topbar)) document.getElementById('topbar').style.backgroundColor = '#777766'
-        if (isavailable(hr)) document.getElementById('hr').style.backgroundColor = '#1ca7a0'
-        if (isavailable(hr)) document.getElementById('hr').style.border = 'solid 3px #1ca7a0'
-        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.border = 'solid 3px #1ca7a0'
-        if (isavailable(inputdiv)) document.getElementById('inputdiv').style.backgroundColor = '#1ca7a0'
-        if (isavailable(input)) document.getElementById('input').style.border = 'solid 2px #1ca7a0'
-        if (isavailable(input)) document.getElementById('input').style.backgroundColor = 'solid 2px #FFFFFF'
-        if (isavailable(input)) document.getElementById('input').style.color = 'solid 2px #000000'
-        if (isavailable(search)) document.getElementById('search').style.border = 'solid 3px #1ca7a0'
-        if (isavailable(search)) document.getElementById('search').style.backgroundColor = '#1ca7a0'
-        if (isavailable(tbl)) document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
-        if (isavailable(selector)) document.getElementById("selector").className = 'slider'
-        if (isavailable(tbl)) {
+        if (isavailable('darktgl')) document.getElementById('darktgl').style.backgroundColor = "#000000"
+        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
+        if (isavailable('backgr')) document.getElementById('backgr').style.color = "#000000"
+        if (isavailable('topbar')) document.getElementById('topbar').style.backgroundColor = '#777766'
+        if (isavailable('hr')) document.getElementById('hr').style.backgroundColor = '#1ca7a0'
+        if (isavailable('hr')) document.getElementById('hr').style.border = 'solid 3px #1ca7a0'
+        if (isavailable('inputdiv')) document.getElementById('inputdiv').style.border = 'solid 3px #1ca7a0'
+        if (isavailable('inputdiv')) document.getElementById('inputdiv').style.backgroundColor = '#1ca7a0'
+        if (isavailable('input')) document.getElementById('input').style.border = 'solid 2px #1ca7a0'
+        if (isavailable('input')) document.getElementById('input').style.backgroundColor = 'solid 2px #FFFFFF'
+        if (isavailable('input')) document.getElementById('input').style.color = 'solid 2px #000000'
+        if (isavailable('search')) document.getElementById('search').style.border = 'solid 3px #1ca7a0'
+        if (isavailable('search')) document.getElementById('search').style.backgroundColor = '#1ca7a0'
+        if (isavailable('tbl')) document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
+        if (isavailable('selector')) document.getElementById("selector").className = 'slider'
+        if (isavailable('tbl')) {
             var rowCount = document.getElementById('tbl').rows.length;
             for (var i = 1; i < rowCount; i++) {
                 if (i % 2 == 1)
@@ -99,11 +106,14 @@ function initinput() {
     document.getElementById("input").value = getParameter("key")
     document.getElementById('selector').value = getParameter("sel")
     document.getElementById('selectorlabel').innerHTML = selectorarr[getParameter("sel")]
-    islight = (getParameter("dark"))==1?0:1
+    islight = (getParameter("dark")) == 1 ? 1 : 0
     darktgl()
-    if (getParameter("key") == '') location.href = '/'
 }
 function buttonclick() {
+    if (getParameter("key") == '') {
+        location.href = '/'
+        return 0;
+    }
     var input = getParameter("key")
     inputlen = input.length
     input = input.replace(/[^가-힣]/g, '') //자동 제외후
@@ -207,7 +217,7 @@ function populateTable(table, rows, cells, content) {
 }
 function redir() {
     var redinp = document.getElementById("input").value
-    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight)
+    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
 }
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -473,8 +483,6 @@ function getfile(selectednum) {
     return [a, b]
 }
 
-//기능 외, 데이터베이스 제작용 함수 TODO
-//완성된 단어 목록 입력시 독자포맷 발음으로 콘솔로그
 function databasemaker(filename) {
     var oFrame = document.getElementById(filename);
     var strRawContents = oFrame.contentWindow.document.body.childNodes[0].innerHTML;

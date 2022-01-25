@@ -2,9 +2,12 @@
 <html lang="en">
 
 <head>
+    <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+    <script src="./main.js"></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=800, initial-scale=0.5">
+    <meta name="viewport" content="width=device-width">
+    <script> viewportset() </script>
     <title>korhyme</title>
     <link rel="shortcut icon" href="#">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,9 +106,9 @@
         style="height: 100%; width: 100%; position: fixed; z-index: -1; left: 0; top: 0; background: linear-gradient(60deg, #f5c12fEE,#ffdc7bEE) ; overflow-x: hidden; text-align: center; font-size: 40pt;">
     </div> -->
     <div id="topbar"
-        style="position: fixed; left: 0;top:0 ;width: 100vw;height: 50px; background-color: #777766; display: block;">
+        style="position: fixed; left: 0;top:0 ;width: 100%;height: 50px; background-color: #777766; display: block;">
         <button id="darktgl"
-            style="border-radius: 20%;margin: 5px;border: solid 2px #FFF; background-color: #000000;border-radius: 20%; height: 40px;width: 40px;float: left;background-image: url('https://cdn2.iconfinder.com/data/icons/picons-basic-3/57/basic3-102_visibility_contrast_brightness-256.png'); background-size: 90%; background-position: center; background-repeat: no-repeat;"
+            style="border-radius: 20%;margin: 5px;margin-left: calc(50vw - 300px);border: solid 2px #FFF; background-color: #000000;border-radius: 20%; height: 40px;width: 40px;float: left;background-image: url('https://cdn2.iconfinder.com/data/icons/picons-basic-3/57/basic3-102_visibility_contrast_brightness-256.png'); background-size: 90%; background-position: center; background-repeat: no-repeat;"
             onclick="darktgl()">
         </button>
         <button id="darktgl"
@@ -117,11 +120,10 @@
     <center>
         <p style="font-size: 60pt;font-family: 'Gugi', cursive;margin-bottom: 0px;">Korhyme</p>
         <p style="margin-bottom: 30px;font-family: 'Gugi', cursive;font-size: 20pt;">한국어 라임 검색기</p>
-        <hr id="hr" style="width: 600px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
+        <hr id="hr" style="width: 570px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
         <div id="div1"
             style="overflow:hidden ;border-radius: 4px;width:500px; height: 140px ; background-color: #00000043; padding: 1px 1px 1px 1px; margin-top: 40px; margin-bottom: 0px;">
-            <script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
-            <script src="./main.js"></script>
+
             <div id="inputdiv"
                 style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 3px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
                 <input id="input" size='    ' maxlength='60' type="text"
@@ -135,7 +137,7 @@
             <input onchange="selectorchange()" oninput="selectorchange()" type="range" class="slider" id="selector"
                 min="0" max="2" style="width: 200px; height: 10px; float: left;margin-top: 15px;" value="1">
             <label id="selectorlabel" style="font-size: 22px;margin-top: 15px; text-align: right; color: #FFFFFF;">
-                <b>보통</b> : 적당한 양의 결괏값
+                <b>보통</b> : 기본 검색, 보통 값
             </label>
         </div>
     </center>
