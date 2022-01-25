@@ -3,7 +3,7 @@ var express = require('express')
 var app = express()
 
 // 3000 포트로 서버 오픈
-var port = 3000
+var port = 8001
 app.listen(port, function () {
   console.log("start! express server on port "+port)
 })
