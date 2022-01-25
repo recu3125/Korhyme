@@ -111,7 +111,7 @@ function initinput() {
 }
 function buttonclick() {
     if (getParameter("key") == '') {
-        location.href = 'http://korhyme.cafe24app.com/'
+        location.href = '/'
         return 0;
     }
     var input = getParameter("key")
@@ -217,7 +217,7 @@ function populateTable(table, rows, cells, content) {
 }
 function redir() {
     var redinp = document.getElementById("input").value
-    location.href = 'http://korhyme.cafe24app.com/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
+    location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
 }
 function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
