@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "express": "^4.17.2",
-    "file-system": "^2.2.2"
+    "file-system": "^2.2.2",
+    "hangul-js": "^0.2.6"
   }
 }
