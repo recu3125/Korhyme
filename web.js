@@ -7,7 +7,7 @@ const Hangul = require('hangul-js');
 var file = [[],[],[]]
 // 3000 포트로 서버 오픈
 app.listen(8001, async function () {
-  console.log("start! express server on port 8001")
+  console.log("start! a")
   file[0] = await getfile(0)
   file[1] = await getfile(1)
   file[2] = await getfile(2)
@@ -30,7 +30,7 @@ app.get('/process/:key/:sel/:from', (req, res) => {
   sel = Number(req.params.sel)
   from = Number(req.params.from)
   res.send(process(key, sel, from))
-  console.log('sended')
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}`)
 })
 
 app.use('/static', express.static(__dirname + '/public'));
@@ -42,15 +42,12 @@ function process(key, sel, from) {
   }
   var input = key
   inputlen = input.length
-  console.log('a')
   input = input.replace(/[^가-힣]/g, '') //자동 제외후
   var tosearch = stdpron(input)
-  console.log('a')
   var scores = search(tosearch)
 
 
   // 정렬후 출력
-  console.log('a')
   var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
   var words = []
   for(i=0;i<=sel;i++)
@@ -316,22 +313,29 @@ function arebothin(a, b, arr2d) {
 }
 
 async function getfile(num) {
-  var numtopath = ['./public/lyrics.txt', './public/news.txt', './public/korean.txt']
+  console.log(num)
+  var numtopath = [__dirname +'/public/lyrics.txt', __dirname +'/public/news.txt', __dirname +'/public/dict.txt']
+  console.log(numtopath[num])
   var a = [], b = []
+  console.log('3')
   return new Promise(resolve => {
   fs.readFile(numtopath[num], 'utf8', (err, result) => {
     if (err) {
+      console.log('e')
       console.error(err)
       return
     }
+    console.log('4')
     while (result.indexOf("\r") >= 0)
       result = result.replace(/\r/g, "");
+      console.log('5')
     var arrLines = result.split("\n");
     for (j of arrLines) {
       splitted = j.split('\t')
       a.push(splitted[0])
       b.push(splitted[1])
     }
+    console.log(a[10])
     resolve([a, b])
   })
   })
