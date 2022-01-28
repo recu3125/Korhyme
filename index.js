@@ -6,8 +6,9 @@ const Hangul = require('hangul-js');
 
 var file = [[],[],[]]
 // 3000 포트로 서버 오픈
-app.listen(8001, async function () {
-  console.log("start! a")
+const port = process.env.PORT
+app.listen(port, async function () {
+  console.log("start at " + port)
   file[0] = await getfile(0)
   file[1] = await getfile(1)
   file[2] = await getfile(2)
