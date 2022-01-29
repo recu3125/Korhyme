@@ -1,10 +1,28 @@
 {
+  "name": "koreanrhyme",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/recu3125/KoreanRhyme.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/recu3125/KoreanRhyme/issues"
+  },
+  "homepage": "https://github.com/recu3125/KoreanRhyme#readme",
+  "description": "",
   "dependencies": {
     "express": "^4.17.2",
     "file-system": "^2.2.2",
     "hangul-js": "^0.2.6"
   },
+  "engines": {
+    "node": "17.3.0"
+  },
   "scripts": {
     "start": "node index.js"
-}
+  }
 }
