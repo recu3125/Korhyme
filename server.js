@@ -30,13 +30,13 @@ app.get('/process/:key/:sel/:from', (req, res) => {
   key = req.params.key
   sel = Number(req.params.sel)
   from = Number(req.params.from)
-  res.send(process(key, sel, from))
+  res.send(processf(key, sel, from))
   console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}`)
 })
 
 app.use('/static', express.static(__dirname + '/public'));
 
-function process(key, sel, from) {
+function processf(key, sel, from) {
   if (key == '') {
     location.href = '/'
     return 0;
