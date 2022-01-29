@@ -20,7 +20,8 @@
     "hangul-js": "^0.2.6"
   },
   "engines": {
-    "node": "17.3.0"
+    "node": "17.3.0",
+    "npm": "8.3.0"
   },
   "scripts": {
     "start": "node server.js"
