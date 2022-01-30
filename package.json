@@ -24,6 +24,6 @@
     "npm": "8.3.0"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   }
 }

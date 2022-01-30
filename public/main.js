@@ -17,7 +17,7 @@ function darktgl() {
     if (islight == 1) {
         islight = 0
         if (isavailable('darktgl')) document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
-        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(60deg, #021515,#042525)"
+        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(90deg, #021515,#042525)"
         if (isavailable('backgr')) document.getElementById('backgr').style.color = "#FFFFFF"
         if (isavailable('topbar')) document.getElementById('topbar').style.backgroundColor = '#334444'
         if (isavailable('hr')) document.getElementById('hr').style.backgroundColor = '#f5c12f'
@@ -25,7 +25,6 @@ function darktgl() {
         if (isavailable('inputdiv')) document.getElementById('inputdiv').style.border = 'solid 3px #f5c12f'
         if (isavailable('inputdiv')) document.getElementById('inputdiv').style.backgroundColor = '#f5c12f'
         if (isavailable('input')) document.getElementById('input').style.border = 'solid 2px #f5c12f'
-        if (isavailable('input')) document.getElementById('input').style.backgroundColor = 'solid 2px #032320'
         if (isavailable('input')) document.getElementById('input').style.color = 'solid 2px #FFFFFF'
         if (isavailable('search')) document.getElementById('search').style.border = 'solid 3px #f5c12f'
         if (isavailable('search')) document.getElementById('search').style.backgroundColor = '#f5c12f'
@@ -45,7 +44,7 @@ function darktgl() {
     else {
         islight = 1
         if (isavailable('darktgl')) document.getElementById('darktgl').style.backgroundColor = "#000000"
-        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(60deg, #f5c12f,#ffdc7b)"
+        if (isavailable('backgr')) document.getElementById('backgr').style.background = "linear-gradient(90deg, #f5c12f,#ffdc7b)"
         if (isavailable('backgr')) document.getElementById('backgr').style.color = "#000000"
         if (isavailable('topbar')) document.getElementById('topbar').style.backgroundColor = '#777766'
         if (isavailable('hr')) document.getElementById('hr').style.backgroundColor = '#1ca7a0'
@@ -106,9 +105,10 @@ function initinput() {
     darktgl()
 }
 
-async function refillres() {
+async function refillres(from) {
+    console.log(`resultnowshown is ${resultsnowshown}`)
     await $.ajax({
-        url: `/process/${getParameter("key")}/${getParameter("sel")}/${resultsnowshown}`,
+        url: `/process/${getParameter("key")}/${getParameter("sel")}/${from}`,
         type: "GET",
         success: function (result) {
             if (result) {
@@ -127,8 +127,9 @@ var checkinterval
 var resultlist = []
 async function buttonclick() {
     mybutton = document.getElementById("myBtn");
-    await refillres()
+    await refillres(0)
     resultlist.unshift(['단어', '점수'])
+    resultsnowshown+=50;
     document.getElementById('tbcen')
         .appendChild(populateTable(null, 50, 2));
     document.getElementById('loading').style.display = 'none'
@@ -139,12 +140,11 @@ async function buttonclick() {
 var isloading = 0
 
 async function checkaddrow() {
-    console.log('running')
+    console.log(`resultnowshown is ${resultsnowshown}`)
     if (resultlist.length <= 150&&isloading==0) {
         isloading=1
-        console.log('loading')
         clearInterval(checkinterval);
-        refillres()
+        refillres(resultsnowshown+100)
         checkinterval = setInterval(checkaddrow, 1000);
     }
     if (location.pathname.startsWith('/search') && (window.innerHeight + window.scrollY) >= document.body.offsetHeight&&resultlist.length>=50) {

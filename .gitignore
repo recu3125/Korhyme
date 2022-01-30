@@ -1,1 +1,6 @@
-Procfile
+node_modules/
+jspm_packages/
+dist
+.cache/
+logs
+*.log
