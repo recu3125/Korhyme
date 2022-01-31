@@ -178,6 +178,7 @@ async function checkaddrow() {
             }
             row.style.border = '2px solid black'
             row.style.text_align = 'center'
+            row.style.fontSize = '17pt'
             row.style.box_sizing = 'border-box'
             table.appendChild(row);
         }
@@ -223,6 +224,7 @@ function populateTable(table, rows, cells) {
             row.style.color = '#FFFFFF';
         }
         row.style.border = '2px solid black'
+        row.style.fontSize = '17pt'
         row.style.text_align = 'center'
         row.style.box_sizing = 'border-box'
         table.appendChild(row);
