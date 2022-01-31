@@ -9,6 +9,10 @@ function viewportset() {
     if (width < 600) {
         document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale=' + Math.min(width / 600, 1));
     }
+    if (location.pathname.startsWith('/search'))
+        document.title = getParameter("key") + '와 라임이 맞는 단어'
+    else
+        document.title = 'Korhyme : 한국어 라임 검색기'
 }
 function isavailable(id) {
     return document.getElementById(id) !== null && document.getElementById(id) !== undefined
