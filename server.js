@@ -34,7 +34,8 @@ app.get('/process/:key/:sel/:from', (req, res) => {
   console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}`)
 })
 
-app.use('/static', express.static(__dirname + '/public'));
+app.use('/spublic', express.static(__dirname + '/public'));
+app.use('/sicon', express.static(__dirname + '/icon'));
 
 function processf(key, sel, from) {
   if (key == '') {
