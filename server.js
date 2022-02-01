@@ -4,7 +4,7 @@ var app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
 
-var file = [[],[],[]]
+var file = [[], [], []]
 // 3000 포트로 서버 오픈
 var port = process.env.PORT || 9000
 app.listen(port, async function () {
@@ -36,6 +36,7 @@ app.get('/process/:key/:sel/:from', (req, res) => {
 
 app.use('/spublic', express.static(__dirname + '/public'));
 app.use('/sicon', express.static(__dirname + '/icon'));
+app.use('/sfonts', express.static(__dirname + '/fonts'));
 
 function processf(key, sel, from) {
   if (key == '') {
@@ -51,12 +52,11 @@ function processf(key, sel, from) {
   // 정렬후 출력
   var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
   var words = []
-  for(i=0;i<=sel;i++)
-  {
-    file[i][0].map(a=> words.push(a))
+  for (i = 0; i <= sel; i++) {
+    file[i][0].map(a => words.push(a))
   }
   var outputlist = [['' + words[result[from]], Math.round(scores[result[from]] * 4)]]
-  for (var i = from+1; i < from+200; i++) {
+  for (var i = from + 1; i < from + 200; i++) {
     var word = ('' + words[result[i]])
     outputlist.push([word, Math.round(scores[result[i]] * 4)])
   }
@@ -73,24 +73,24 @@ function korformatter(commonkor) {
   //가L나L다
   disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
   disassemed = disassemed.replace(/ㅗ ㅏ/g, 'ㅘ')
-  disassemed = disassemed.replace(/ㅗ ㅐ/g, 'ㅙ')
-  disassemed = disassemed.replace(/ㅗ ㅣ/g, 'ㅚ')
-  disassemed = disassemed.replace(/ㅜ ㅓ/g, 'ㅝ')
-  disassemed = disassemed.replace(/ㅜ ㅔ/g, 'ㅞ')
-  disassemed = disassemed.replace(/ㅜ ㅣ/g, 'ㅟ')
-  disassemed = disassemed.replace(/ㅡ ㅣ/g, 'ㅢ')
-  disassemed = disassemed.replace(/ㄱ ㅅ/g, 'ㄳ')
-  disassemed = disassemed.replace(/ㄴ ㅈ/g, 'ㄵ')
-  disassemed = disassemed.replace(/ㄴ ㅎ/g, 'ㄶ')
-  disassemed = disassemed.replace(/ㄹ ㄱ/g, 'ㄺ')
-  disassemed = disassemed.replace(/ㄹ ㅁ/g, 'ㄻ')
-  disassemed = disassemed.replace(/ㄹ ㅂ/g, 'ㄼ')
-  disassemed = disassemed.replace(/ㄹ ㅅ/g, 'ㄽ')
-  disassemed = disassemed.replace(/ㄹ ㅌ/g, 'ㄾ')
-  disassemed = disassemed.replace(/ㄹ ㅍ/g, 'ㄿ')
-  disassemed = disassemed.replace(/ㄹ ㅎ/g, 'ㅀ')
-  disassemed = disassemed.replace(/ㅂ ㅅ/g, 'ㅄ')
-  disassemed = disassemed.split('L')
+    .replace(/ㅗ ㅐ/g, 'ㅙ')
+    .replace(/ㅗ ㅣ/g, 'ㅚ')
+    .replace(/ㅜ ㅓ/g, 'ㅝ')
+    .replace(/ㅜ ㅔ/g, 'ㅞ')
+    .replace(/ㅜ ㅣ/g, 'ㅟ')
+    .replace(/ㅡ ㅣ/g, 'ㅢ')
+    .replace(/ㄱ ㅅ/g, 'ㄳ')
+    .replace(/ㄴ ㅈ/g, 'ㄵ')
+    .replace(/ㄴ ㅎ/g, 'ㄶ')
+    .replace(/ㄹ ㄱ/g, 'ㄺ')
+    .replace(/ㄹ ㅁ/g, 'ㄻ')
+    .replace(/ㄹ ㅂ/g, 'ㄼ')
+    .replace(/ㄹ ㅅ/g, 'ㄽ')
+    .replace(/ㄹ ㅌ/g, 'ㄾ')
+    .replace(/ㄹ ㅍ/g, 'ㄿ')
+    .replace(/ㄹ ㅎ/g, 'ㅀ')
+    .replace(/ㅂ ㅅ/g, 'ㅄ')
+    .split('L')
   for (var i = 0, len = disassemed.length; i < len; i++) {
     disassemed[i] = disassemed[i].replace(/^\L+|\L+$/g, '').trim()
     if (disassemed[i].length == 3) {
@@ -118,106 +118,101 @@ function stdpron(a) {
   var a = korformatter(a)
   //모음 한단어에 하나로
   a = a.replace(/ㅑ/g, 'ㅣ ELㅇ ㅏ')
-  a = a.replace(/ㅕ/g, 'ㅣ ELㅇ ㅓ')
-  a = a.replace(/ㅛ/g, 'ㅣ ELㅇ ㅗ')
-  a = a.replace(/ㅠ/g, 'ㅣ ELㅇ ㅜ')
-  a = a.replace(/ㅒ/g, 'ㅣ ELㅇ ㅐ')
-  a = a.replace(/ㅖ/g, 'ㅣ ELㅇ ㅔ')
-  a = a.replace(/ㅘ/g, 'ㅗ ELㅇ ㅏ')
-  a = a.replace(/ㅙ/g, 'ㅗ ELㅇ ㅐ')
-  a = a.replace(/ㅚ/g, 'ㅜ ELㅇ ㅔ')
-  a = a.replace(/ㅝ/g, 'ㅜ ELㅇ ㅓ')
-  a = a.replace(/ㅞ/g, 'ㅜ ELㅇ ㅔ')
-  a = a.replace(/ㅟ/g, 'ㅜ ELㅇ ㅣ')
-  a = a.replace(/ㅢ/g, 'ㅡ ELㅇ ㅣ')
-  a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
-  a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
-  a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
-  a = a.replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    .replace(/ㅕ/g, 'ㅣ ELㅇ ㅓ')
+    .replace(/ㅛ/g, 'ㅣ ELㅇ ㅗ')
+    .replace(/ㅠ/g, 'ㅣ ELㅇ ㅜ')
+    .replace(/ㅒ/g, 'ㅣ ELㅇ ㅐ')
+    .replace(/ㅖ/g, 'ㅣ ELㅇ ㅔ')
+    .replace(/ㅘ/g, 'ㅗ ELㅇ ㅏ')
+    .replace(/ㅙ/g, 'ㅗ ELㅇ ㅐ')
+    .replace(/ㅚ/g, 'ㅜ ELㅇ ㅔ')
+    .replace(/ㅝ/g, 'ㅜ ELㅇ ㅓ')
+    .replace(/ㅞ/g, 'ㅜ ELㅇ ㅔ')
+    .replace(/ㅟ/g, 'ㅜ ELㅇ ㅣ')
+    .replace(/ㅢ/g, 'ㅡ ELㅇ ㅣ')
+    .replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    .replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    .replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
+    .replace(/([ㅏㅓㅗㅜㅡㅣㅐㅔ]) ELㅇ \1/g, '$1')
 
-  //사이시옷(모든 시옷을 사이시옷으로 생각)
-  a = a.replace(/ㅅL(.) ㅣ/g, 'ㄴL$1 ㅣ')
-  a = a.replace(/ㅅL[ㄴㅁ]/g, 'ㅅLㄴ')
-  a = a.replace(/ㅅLㄱ/g, 'ELㄲ')
-  a = a.replace(/ㅅLㄷ/g, 'ELㄸ')
-  a = a.replace(/ㅅLㅂ/g, 'ELㅃ')
-  a = a.replace(/ㅅLㅅ/g, 'ELㅆ')
-  a = a.replace(/ㅅLㅈ/g, 'ELㅉ')
+    //사이시옷(모든 시옷을 사이시옷으로 생각)
+    .replace(/ㅅL(.) ㅣ/g, 'ㄴL$1 ㅣ')
+    .replace(/ㅅL[ㄴㅁ]/g, 'ㅅLㄴ')
+    .replace(/ㅅLㄱ/g, 'ELㄲ')
+    .replace(/ㅅLㄷ/g, 'ELㄸ')
+    .replace(/ㅅLㅂ/g, 'ELㅃ')
+    .replace(/ㅅLㅅ/g, 'ELㅆ')
+    .replace(/ㅅLㅈ/g, 'ELㅉ')
 
-  //된소리되기(어간생각X)
-  a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄱ/g, '$1Lㄲ')
-  a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄷ/g, '$1Lㄸ')
-  a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅂ/g, '$1Lㅃ')
-  a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅅ/g, '$1Lㅆ')
-  a = a.replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅈ/g, '$1Lㅉ')
+    //된소리되기(어간생각X)
+    .replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄱ/g, '$1Lㄲ')
+    .replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㄷ/g, '$1Lㄸ')
+    .replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅂ/g, '$1Lㅃ')
+    .replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅅ/g, '$1Lㅆ')
+    .replace(/([ㄱㄲㅋㄳㄺㄷㅅㅆㅈㅊㅌㅂㅍㄼㄿㅄ])Lㅈ/g, '$1Lㅉ')
 
-  //동화
-  a = a.replace(/ㄴLㄹ/g, 'ㄹLㄹ')
-  a = a.replace(/ㄹLㄴ/g, 'ㄹLㄹ')
-  a = a.replace(/ㅀLㄴ/g, 'ㄹLㄹ')
-  a = a.replace(/ㄾLㄴ/g, 'ㄹLㄹ')
-  a = a.replace(/([ㅁㅇ])Lㄹ/g, '$1Lㄴ')
-  a = a.replace(/ㄱLㄹ/g, 'ㅇLㄴ')
-  a = a.replace(/ㅂLㄹ/g, 'ㅁLㄴ')
-  a = a.replace(/[ㄱㄲㅋㄳㄺ]L([ㄴㅁ])/g, 'ㅇL$1')
-  a = a.replace(/[ㄷㅅㅆㅈㅊㅌㅎ]L([ㄴㅁ])/g, 'ㄴL$1')
-  a = a.replace(/[ㅂㅍㄼㄿㅄ]L([ㄴㅁ])/g, 'ㅁL$1')
+    //동화
+    .replace(/ㄴLㄹ/g, 'ㄹLㄹ')
+    .replace(/ㄹLㄴ/g, 'ㄹLㄹ')
+    .replace(/ㅀLㄴ/g, 'ㄹLㄹ')
+    .replace(/ㄾLㄴ/g, 'ㄹLㄹ')
+    .replace(/([ㅁㅇ])Lㄹ/g, '$1Lㄴ')
+    .replace(/ㄱLㄹ/g, 'ㅇLㄴ')
+    .replace(/ㅂLㄹ/g, 'ㅁLㄴ')
+    .replace(/[ㄱㄲㅋㄳㄺ]L([ㄴㅁ])/g, 'ㅇL$1')
+    .replace(/[ㄷㅅㅆㅈㅊㅌㅎ]L([ㄴㅁ])/g, 'ㄴL$1')
+    .replace(/[ㅂㅍㄼㄿㅄ]L([ㄴㅁ])/g, 'ㅁL$1')
 
-  //받침의 발음
-  a = a.replace(/([ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅋㅌㅍㄲㅆ])Lㅇ/g, 'EL$1')
-  a = a.replace(/ㄳLㅇ/g, 'ㄱLㅆ')
-  a = a.replace(/ㄵLㅇ/g, 'ㄴLㅈ')
-  a = a.replace(/ㄶLㅇ/g, 'ㄴLㅇ')
-  a = a.replace(/ㄺLㅇ/g, 'ㄹLㄱ')
-  a = a.replace(/ㄻLㅇ/g, 'ㄹLㅁ')
-  a = a.replace(/ㄼLㅇ/g, 'ㄹLㅂ')
-  a = a.replace(/ㄽLㅇ/g, 'ㄹLㅆ')
-  a = a.replace(/ㄾLㅇ/g, 'ㄹLㅌ')
-  a = a.replace(/ㄿLㅇ/g, 'ㄹLㅍ')
-  a = a.replace(/ㅀLㅇ/g, 'ㄹLㅇ')
-  a = a.replace(/ㅄLㅇ/g, 'ㅂLㅆ')
-  a = a.replace(/ㅎLㄴ/g, 'ㄴLㄴ')
-  a = a.replace(/([ㅎㄶㅀ])Lㅅ/g, '$1Lㅆ')
-  a = a.replace(/([ㅎㄶㅀ])Lㄱ/g, '$1Lㅋ')
-  a = a.replace(/([ㅎㄶㅀ])Lㄷ/g, '$1Lㅌ')
-  a = a.replace(/([ㅎㄶㅀ])Lㅈ/g, '$1Lㅊ')
-  a = a.replace(/([ㄱㄺ])Lㅎ/g, 'ELㅋ')
-  a = a.replace(/([ㄷ])Lㅎ/g, 'ELㅊ')
-  a = a.replace(/([ㅂㄼ])Lㅎ/g, 'ELㅍ')
-  a = a.replace(/([ㅈㄵ])Lㅎ/g, 'ELㅊ')
-  a = a.replace(/([ㅅㅈㅊㅌ])Lㅎ/g, 'ELㅌ')
+    //받침의 발음
+    .replace(/([ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅋㅌㅍㄲㅆ])Lㅇ/g, 'EL$1')
+    .replace(/ㄳLㅇ/g, 'ㄱLㅆ')
+    .replace(/ㄵLㅇ/g, 'ㄴLㅈ')
+    .replace(/ㄶLㅇ/g, 'ㄴLㅇ')
+    .replace(/ㄺLㅇ/g, 'ㄹLㄱ')
+    .replace(/ㄻLㅇ/g, 'ㄹLㅁ')
+    .replace(/ㄼLㅇ/g, 'ㄹLㅂ')
+    .replace(/ㄽLㅇ/g, 'ㄹLㅆ')
+    .replace(/ㄾLㅇ/g, 'ㄹLㅌ')
+    .replace(/ㄿLㅇ/g, 'ㄹLㅍ')
+    .replace(/ㅀLㅇ/g, 'ㄹLㅇ')
+    .replace(/ㅄLㅇ/g, 'ㅂLㅆ')
+    .replace(/ㅎLㄴ/g, 'ㄴLㄴ')
+    .replace(/([ㅎㄶㅀ])Lㅅ/g, '$1Lㅆ')
+    .replace(/([ㅎㄶㅀ])Lㄱ/g, '$1Lㅋ')
+    .replace(/([ㅎㄶㅀ])Lㄷ/g, '$1Lㅌ')
+    .replace(/([ㅎㄶㅀ])Lㅈ/g, '$1Lㅊ')
+    .replace(/([ㄱㄺ])Lㅎ/g, 'ELㅋ')
+    .replace(/([ㄷ])Lㅎ/g, 'ELㅊ')
+    .replace(/([ㅂㄼ])Lㅎ/g, 'ELㅍ')
+    .replace(/([ㅈㄵ])Lㅎ/g, 'ELㅊ')
+    .replace(/([ㅅㅈㅊㅌ])Lㅎ/g, 'ELㅌ')
 
-  //7종성예외
-  a = a.replace(/ㅂ ㅏ ㄼ/g, 'ㅂ ㅏ ㅂ')
-  a = a.replace(/ㄴ ㅓ ㄼ/g, 'ㄴ ㅓ ㅂ')
+    //7종성예외
+    .replace(/ㅂ ㅏ ㄼ/g, 'ㅂ ㅏ ㅂ')
+    .replace(/ㄴ ㅓ ㄼ/g, 'ㄴ ㅓ ㅂ')
 
-  //7종성
-  a = a.replace(/[ㄲㅋㄳㄺ]L/g, 'ㄱL')
-  a = a.replace(/[ㄵ]L/g, 'ㄴL')
-  a = a.replace(/[ㅅㅆㅈㅊㅌ]L/g, 'ㄷL')
-  a = a.replace(/[ㄼㄽㄾ]L/g, 'ㄹL')
-  a = a.replace(/[ㄻ]L/g, 'ㅁL')
-  a = a.replace(/[ㅍㅄ]L/g, 'ㅂL')
-  a = a.replace(/[ㄿ]L/g, 'ㅇL')
+    //7종성
+    .replace(/[ㄲㅋㄳㄺ]L/g, 'ㄱL')
+    .replace(/[ㄵ]L/g, 'ㄴL')
+    .replace(/[ㅅㅆㅈㅊㅌ]L/g, 'ㄷL')
+    .replace(/[ㄼㄽㄾ]L/g, 'ㄹL')
+    .replace(/[ㄻ]L/g, 'ㅁL')
+    .replace(/[ㅍㅄ]L/g, 'ㅂL')
+    .replace(/[ㄿ]L/g, 'ㅇL')
 
-  a = a.replace(/ㅎL/g, 'EL')
+    .replace(/ㅎL/g, 'EL')
 
-  //규정에 없지만 자율적으로
-  a = a.replace(/([ㄴ])Lㅎ/g, 'ELㄴ')
-  a = a.replace(/([ㄹ])Lㅎ/g, 'ELㄹ')
-  a = a.replace(/([ㅁ])Lㅎ/g, 'ELㅁ')
-  a = a.replace(/([ㅇ])Lㅎ/g, 'ㅇLㅇ')
+    //규정에 없지만 자율적으로
+    .replace(/([ㄴ])Lㅎ/g, 'ELㄴ')
+    .replace(/([ㄹ])Lㅎ/g, 'ELㄹ')
+    .replace(/([ㅁ])Lㅎ/g, 'ELㅁ')
+    .replace(/([ㅇ])Lㅎ/g, 'ㅇLㅇ')
   return a;
-}
-function onlyUnique(value, index, self) {
-  var vallen = value.split('L').length
-  return (self.indexOf(value) === index) && (inputlen + 2 >= vallen);
 }
 function search(keyword) {
   var wordslist = []
-  for(i=0;i<=sel;i++)
-  {
-    file[i][1].map(a=> wordslist.push(a))
+  for (i = 0; i <= sel; i++) {
+    file[i][1].map(a => wordslist.push(a))
   }
   var scores = []
   var len = wordslist.length
@@ -240,6 +235,7 @@ function search(keyword) {
     var score = 0
     var asplit
     var bsplit
+    var chojongchain = 0
     for (var j = 0; j < alen; j++) {
       var befasplit = asplit
       var befbsplit = bsplit
@@ -247,16 +243,21 @@ function search(keyword) {
       bsplit = (b[j] || '').split(' ')
       var force0 = 0 //무조건 같게
       var force2 = 0 //무조건 같게
-      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ'
-        || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')
-        force0 = 1
-      if (j < alen - 1 && asplit[2] == 'E' && (a[j + 1] || '').split(' ')[0] == 'ㅇ'
-        || j < alen - 1 && bsplit[2] == 'E' && (b[j + 1] || '').split(' ')[0] == 'ㅇ')
+      if (chojongchain) //이번 종성이 다음 초성이랑 연결
+      {
         force2 = 1
+        chojongchain = 0
+      }
+      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ'
+        || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')// 이번 초성이 이전 종성이랑 연결
+      {
+        force0 = 1
+        chojongchain = 1
+      }
       score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
-      score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1)
+      score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
       var rel2 = relevance2(asplit[2], bsplit[2], force2)
-      score += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1)
+      score += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
     }
     score = Math.max(score, 0)
     score /= aleno
@@ -291,54 +292,35 @@ function relevance2(a, b, force) {
   else if (arebothin(a, b, similar)) return 1;
   else return 0;
 }
-function arebothin(a, b, arr2d) {
-  for (var i of arr2d) {
-    for (var j of i) {
-      if (j == a) {
-        for (var k of i) {
-          if (k == b)
-            return 1;
-        }
-        return 0;
-      }
-      if (j == b) {
-        for (var k of i) {
-          if (k == a)
-            return 1;
-        }
-        return 0;
-      }
-    }
+
+function arebothin(a, b, arr) {
+  for (var i = 0, bothinlen = arr.length; i < bothinlen; i++) {
+    var element = arr[i]
+    if (element.includes(a) && element.includes(b))
+      return 1;
   }
   return 0;
 }
 
 async function getfile(num) {
-  console.log(num)
-  var numtopath = [__dirname +'/public/lyrics.txt', __dirname +'/public/news.txt', __dirname +'/public/dict.txt']
-  console.log(numtopath[num])
+  var numtopath = [__dirname + '/public/lyrics.txt', __dirname + '/public/news.txt', __dirname + '/public/dict.txt']
   var a = [], b = []
-  console.log('3')
   return new Promise(resolve => {
-  fs.readFile(numtopath[num], 'utf8', (err, result) => {
-    if (err) {
-      console.log('e')
-      console.error(err)
-      return
-    }
-    console.log('4')
-    while (result.indexOf("\r") >= 0)
-      result = result.replace(/\r/g, "");
-      console.log('5')
-    var arrLines = result.split("\n");
-    for (j of arrLines) {
-      splitted = j.split('\t')
-      a.push(splitted[0])
-      b.push(splitted[1])
-    }
-    console.log(a[10])
-    resolve([a, b])
-  })
+    fs.readFile(numtopath[num], 'utf8', (err, result) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      while (result.indexOf("\r") >= 0)
+        result = result.replace(/\r/g, "");
+      var arrLines = result.split("\n");
+      for (j of arrLines) {
+        splitted = j.split('\t')
+        a.push(splitted[0])
+        b.push(splitted[1])
+      }
+      resolve([a, b])
+    })
   })
 }
 

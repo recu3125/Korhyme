@@ -1,7 +1,3 @@
-var inputlen
-var resultssaved = []
-var wordssaved = []
-var scoressaved = []
 var resultsnowshown = 0
 var islight = 1
 function viewportset() {
@@ -32,7 +28,7 @@ function darktgl() {
         if (isavailable('input')) document.getElementById('input').style.color = 'solid 2px #FFFFFF'
         if (isavailable('search')) document.getElementById('search').style.border = 'solid 3px #f5c12f'
         if (isavailable('search')) document.getElementById('search').style.backgroundColor = '#f5c12f'
-        if (isavailable('tbl')) document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
+        if (document.getElementById("tbl").rows[0]!==null&&document.getElementById("tbl").rows[0]!==undefined) document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
         if (isavailable('selector')) document.getElementById("selector").className = 'sliderdark'
         if (isavailable('tbl')) {
             var rowCount = document.getElementById('tbl').rows.length;
@@ -60,7 +56,7 @@ function darktgl() {
         if (isavailable('input')) document.getElementById('input').style.color = 'solid 2px #000000'
         if (isavailable('search')) document.getElementById('search').style.border = 'solid 3px #1ca7a0'
         if (isavailable('search')) document.getElementById('search').style.backgroundColor = '#1ca7a0'
-        if (isavailable('tbl')) document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
+        if (document.getElementById("tbl").rows[0]!==null&&document.getElementById("tbl").rows[0]!==undefined) document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
         if (isavailable('selector')) document.getElementById("selector").className = 'slider'
         if (isavailable('tbl')) {
             var rowCount = document.getElementById('tbl').rows.length;
@@ -111,7 +107,6 @@ function initinput() {
 
 async function refillres(from) {
     var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-9)
-    console.log(`resultnowshown is ${resultsnowshown}`)
     await $.ajax({
         url: `/process/${key}/${getParameter("sel")}/${from}`,
         type: "GET",
@@ -119,7 +114,6 @@ async function refillres(from) {
             if (result) {
                 JSON.parse(result).map(a => resultlist.push(a))
                 isloading=0
-                console.log('loaded')
             }
             else {
                 alert("불러오기 실패");
@@ -145,7 +139,6 @@ async function buttonclick() {
 var isloading = 0
 
 async function checkaddrow() {
-    console.log(`resultnowshown is ${resultsnowshown}`)
     if (resultlist.length <= 150&&isloading==0) {
         isloading=1
         clearInterval(checkinterval);
