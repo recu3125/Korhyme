@@ -44,7 +44,6 @@ function processf(key, sel, from) {
   }
   var input = key
   inputlen = input.length
-  input = input.replace(/[^가-힣]/g, '') //자동 제외후
   var tosearch = stdpron(input)
   var scores = search(tosearch)
 

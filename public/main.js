@@ -110,9 +110,10 @@ function initinput() {
 }
 
 async function refillres(from) {
+    var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-9)
     console.log(`resultnowshown is ${resultsnowshown}`)
     await $.ajax({
-        url: `/process/${getParameter("key")}/${getParameter("sel")}/${from}`,
+        url: `/process/${key}/${getParameter("sel")}/${from}`,
         type: "GET",
         success: function (result) {
             if (result) {
