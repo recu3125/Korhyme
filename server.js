@@ -4,14 +4,42 @@ var app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
 
-var file = [[], [], []]
+var file = [[[], []], [[], []], [[], []]]
 // 3000 포트로 서버 오픈
 var port = process.env.PORT || 9000
 app.listen(port, async function () {
   console.log("start at " + port)
-  file[0] = await getfile(0)
-  file[1] = await getfile(1)
-  file[2] = await getfile(2)
+  getfile(0).then(arr => {
+    arr[0].map(a => { // 단어
+      file[0][0].push(a)
+      file[1][0].push(a)
+      file[2][0].push(a)
+    })
+    arr[1].map(a => { // 발음
+      file[0][1].push(a)
+      file[1][1].push(a)
+      file[2][1].push(a)
+    })
+  })
+  getfile(1).then(arr => {
+    arr[0].map(a => { // 단어
+      file[1][0].push(a)
+      file[2][0].push(a)
+    })
+    arr[1].map(a => { // 발음
+      file[1][1].push(a)
+      file[2][1].push(a)
+    })
+  })
+  getfile(2).then(arr => {
+    arr[0].map(a => { // 단어
+      file[2][0].push(a)
+    })
+    arr[1].map(a => { // 발음
+      file[2][1].push(a)
+    })
+    console.log('data loaded')
+  })
 })
 
 app.get('/', function (req, res) {
@@ -25,11 +53,11 @@ app.get('/search', (req, res) => {
 app.get('/info', (req, res) => {
   res.sendFile(__dirname + "/public/info.html")
 })
-
+var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
-  key = req.params.key
+  var key = req.params.key
   sel = Number(req.params.sel)
-  from = Number(req.params.from)
+  var from = Number(req.params.from)
   res.send(processf(key, sel, from))
   console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}`)
 })
@@ -44,25 +72,21 @@ function processf(key, sel, from) {
     return 0;
   }
   var input = key
-  inputlen = input.length
+  var inputlen = input.length
   var tosearch = stdpron(input)
   var scores = search(tosearch)
 
 
   // 정렬후 출력
   var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
-  var words = []
-  for (i = 0; i <= sel; i++) {
-    file[i][0].map(a => words.push(a))
-  }
-  var outputlist = [['' + words[result[from]], Math.round(scores[result[from]] * 4)]]
+  var words = file[sel][0]
+  var outputlist = [
+    ['' + words[result[from]], Math.round(scores[result[from]] * 4)]
+  ]
   for (var i = from + 1; i < from + 200; i++) {
     var word = ('' + words[result[i]])
     outputlist.push([word, Math.round(scores[result[i]] * 4)])
   }
-  resultssaved = result
-  wordssaved = words
-  scoressaved = scores
   return JSON.stringify(outputlist)
 }
 
@@ -71,7 +95,7 @@ function korformatter(commonkor) {
   //가나다
   commonkor = commonkor.replace(/ ?/g, 'L').replace(/^\L+|\L+$/g, '').trim()
   //가L나L다
-  disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
+  var disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
   disassemed = disassemed.replace(/ㅗ ㅏ/g, 'ㅘ')
     .replace(/ㅗ ㅐ/g, 'ㅙ')
     .replace(/ㅗ ㅣ/g, 'ㅚ')
@@ -100,6 +124,7 @@ function korformatter(commonkor) {
   disassemed = disassemed.join('L')
   return disassemed
 }
+
 function betterDisassemble(input) {
   var inlen = input.length
   var out = ''
@@ -114,6 +139,7 @@ function betterDisassemble(input) {
   out += fin
   return out
 }
+
 function stdpron(a) {
   var a = korformatter(a)
   //모음 한단어에 하나로
@@ -209,25 +235,22 @@ function stdpron(a) {
     .replace(/([ㅇ])Lㅎ/g, 'ㅇLㅇ')
   return a;
 }
+
 function search(keyword) {
-  var wordslist = []
-  for (i = 0; i <= sel; i++) {
-    file[i][1].map(a => wordslist.push(a))
-  }
+  var pronslist = file[sel][1]
   var scores = []
-  var len = wordslist.length
+  var len = pronslist.length
   var ao = keyword.split('L')
   var aleno = ao.length
   for (var i = 0; i < len; i++) {
     var a = ao //입력 단어 발음
     var alen = aleno //길이
-    b = (wordslist[i] || '').split('L')// 비교할 단어 발음
+    var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
     var blen = b.length //길이
     if (alen < blen) {
       b = b.slice(-alen)
       blen = alen
-    }
-    else {
+    } else {
       a = a.slice(-blen)
       alen = blen
     }
@@ -248,8 +271,8 @@ function search(keyword) {
         force2 = 1
         chojongchain = 0
       }
-      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ'
-        || j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ')// 이번 초성이 이전 종성이랑 연결
+      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ' ||
+        j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ') // 이번 초성이 이전 종성이랑 연결
       {
         force0 = 1
         chojongchain = 1
@@ -265,6 +288,7 @@ function search(keyword) {
   }
   return scores
 }
+
 function relevance0(a, b, force) {
   if (force == 1 && a != b) return -10000;
   if (a == b) return 5;
@@ -274,6 +298,7 @@ function relevance0(a, b, force) {
   if (arebothin(a, b, ssimilar)) return 1;
   else return 0;
 }
+
 function relevance1(a, b) {
   if (a == b) return 40;
   var same = ['ㅙㅚㅞ', 'ㅔㅐ']
@@ -282,6 +307,7 @@ function relevance1(a, b) {
   else if (arebothin(a, b, similar)) return 35;
   else return 0;
 }
+
 function relevance2(a, b, force) {
   if (force == 1 && a != b) return -10000;
   if (a == 'E' && b == 'E') return 3;
@@ -304,7 +330,8 @@ function arebothin(a, b, arr) {
 
 async function getfile(num) {
   var numtopath = [__dirname + '/public/lyrics.txt', __dirname + '/public/news.txt', __dirname + '/public/dict.txt']
-  var a = [], b = []
+  var a = [],
+    b = []
   return new Promise(resolve => {
     fs.readFile(numtopath[num], 'utf8', (err, result) => {
       if (err) {
@@ -314,8 +341,8 @@ async function getfile(num) {
       while (result.indexOf("\r") >= 0)
         result = result.replace(/\r/g, "");
       var arrLines = result.split("\n");
-      for (j of arrLines) {
-        splitted = j.split('\t')
+      for (var j of arrLines) {
+        var splitted = j.split('\t')
         a.push(splitted[0])
         b.push(splitted[1])
       }
