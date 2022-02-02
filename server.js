@@ -53,6 +53,10 @@ app.get('/search', (req, res) => {
 app.get('/info', (req, res) => {
   res.sendFile(__dirname + "/public/info.html")
 })
+
+app.get('/naver563cb392f54442bd9c3cc519ad255616.html', (req, res) => {
+  res.sendFile(__dirname + "/naver563cb392f54442bd9c3cc519ad255616.html")
+})
 var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
   var key = req.params.key
