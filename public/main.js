@@ -1,3 +1,11 @@
+var isMouseScroll = false;
+
+window.addEventListener('wheel',function(e)
+{
+  console.log('mouse wheel');
+  isMouseScroll = true;
+});
+
 var resultsnowshown = 0
 var islight = 1
 function viewportset() {
@@ -77,6 +85,10 @@ function scrollFunction() {
 }
 function topFunction() {
   pos = 0
+  if(!isMouseScroll)
+  {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
 }
 function selectorchange() {
   var selectorarr = [
