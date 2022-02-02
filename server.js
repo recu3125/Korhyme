@@ -61,6 +61,9 @@ app.get('/naver563cb392f54442bd9c3cc519ad255616.html', (req, res) => {
 app.get('/robots.txt', (req, res) => {
   res.sendFile(__dirname + "/robots.txt")
 })
+app.get('/sitemap', (req, res) => {
+  res.sendFile(__dirname + "/sitemap.xml")
+})
 
 var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
@@ -78,7 +81,7 @@ app.use('/sfonts', express.static(__dirname + '/fonts'));
 function processf(key, sel, from) {
   if (key == '') {
     location.href = '/'
-    return 0;
+    return '0';
   }
   var input = key
   var inputlen = input.length

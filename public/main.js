@@ -111,6 +111,9 @@ function initinput() {
 
 async function refillres(from) {
   var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-9)
+  if(key == ''){
+    location.href ='/'
+  }
   await $.ajax({
     url: `/process/${key}/${getParameter("sel")}/${from}`,
     type: "GET",
