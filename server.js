@@ -274,8 +274,8 @@ function search(keyword) {
     for (var j = 0; j < alen; j++) {
       var befasplit = asplit
       var befbsplit = bsplit
-      asplit = (a[j] || '').split(' ')
-      bsplit = (b[j] || '').split(' ')
+      asplit = [a[j][0],a[j][2],a[j][4]]
+      bsplit = [b[j][0],b[j][2],b[j][4]]
       var force0 = 0 //무조건 같게
       var force2 = 0 //무조건 같게
       if (chojongchain) //이번 종성이 다음 초성이랑 연결
