@@ -249,6 +249,7 @@ function stdpron(a) {
 }
 
 function search(keyword) {
+  var cache = new Map()
   var pronslist = file[sel][1]
   var scores = []
   var len = pronslist.length
@@ -289,10 +290,19 @@ function search(keyword) {
         force0 = 1
         chojongchain = 1
       }
-      score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
-      score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
-      var rel2 = relevance2(asplit[2], bsplit[2], force2)
-      score += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+      var key = a[j] + b[j]
+      if (force0 == 0 && force2 == 0 && cache.has(key)) {
+        score += cache.get(key)
+      }
+      else {
+        var nowscore = 0
+        nowscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
+        nowscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
+        var rel2 = relevance2(asplit[2], bsplit[2], force2)
+        nowscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+        cache.set(key, nowscore)
+        score += nowscore
+      }
     }
     score = Math.max(score, 0)
     score /= aleno
