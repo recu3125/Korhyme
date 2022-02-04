@@ -65,6 +65,10 @@ app.get('/sitemap', (req, res) => {
   res.sendFile(__dirname + "/sitemap.xml")
 })
 
+app.get('/:str', (req, res) => {
+  res.sendFile(__dirname + '/' + req.params.str)
+})
+
 var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
   var key = req.params.key
