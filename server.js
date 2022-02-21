@@ -71,11 +71,13 @@ app.get('/:str', (req, res) => {
 
 var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
+  var start = +new Date()
   var key = req.params.key
   sel = Number(req.params.sel)
   var from = Number(req.params.from)
   res.send(processf(key, sel, from))
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}`)
+  var end =  +new Date()
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${end-start} ms`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
@@ -304,7 +306,6 @@ function search(keyword) {
   }
   return scores
 }
-
 function relevance0(a, b, force) {
   if (force == 1 && a != b) return -10000;
   if (a == b) return 5;
