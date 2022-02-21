@@ -16,7 +16,7 @@ function viewportset() {
   if (location.pathname.startsWith('/search'))
     document.title = getParameter("key") + '와 라임이 맞는 단어'
   else
-    document.title = 'Korhyme : 한국어 라임 검색기'
+    document.title = '한국어 라임 검색기 Korhyme'
 }
 function darktgl() {
   if (islight == 1) {
