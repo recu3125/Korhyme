@@ -251,6 +251,7 @@ function stdpron(a) {
 }
 
 function search(keyword) {
+  var memorization = []
   var pronslist = file[sel][1]
   var scores = []
   var len = pronslist.length
@@ -291,10 +292,21 @@ function search(keyword) {
         force0 = 1
         chojongchain = 1
       }
-      score += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
-      score += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
-      var rel2 = relevance2(asplit[2], bsplit[2], force2)
-      score += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+      chartocode =(bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*1000000 + (bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*1000 + (bsplit[2]==undefined ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+      if (memorization[chartocode] != undefined) //mem call
+      {
+        score += memorization[chartocode]
+      }
+      else //계산
+      {
+        var tempscore = 0
+        tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
+        tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
+        var rel2 = relevance2(asplit[2], bsplit[2], force2)
+        tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+        memorization[chartocode] = tempscore
+        score+=tempscore
+      }
     }
     score = Math.max(score, 0)
     score /= aleno
