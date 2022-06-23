@@ -88,6 +88,7 @@ function processf(key, sel, from) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
+  console.log(tosearch)
   var scores = search(tosearch)
 
 
@@ -251,13 +252,13 @@ function stdpron(a) {
 }
 
 function search(keyword) {
-  var memorization = []
-  var pronslist = file[sel][1]
+  var memorization = [] //한글자당 값 기억용 배열(짱큼)
+  var pronslist = file[sel][1] 
   var scores = []
   var len = pronslist.length
   var ao = keyword.split('L')
   var aleno = ao.length
-  for (var i = 0; i < len; i++) {
+  for (var i = 0; i < len; i++) { //단어 vs 단어 비교
     var a = ao //입력 단어 발음
     var alen = aleno //길이
     var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
@@ -274,14 +275,14 @@ function search(keyword) {
     var asplit
     var bsplit
     var chojongchain = 0
-    for (var j = 0; j < alen; j++) {
+    for (var j = 0; j < alen; j++) { //글자 vs 글자 비교
       var befasplit = asplit
       var befbsplit = bsplit
-      asplit = [a[j][0],a[j][2],a[j][4]]
+      asplit = [a[j][0],a[j][2],a[j][4]] //초,중,종성
       bsplit = [b[j][0],b[j][2],b[j][4]]
       var force0 = 0 //무조건 같게
       var force2 = 0 //무조건 같게
-      if (chojongchain) //이번 종성이 다음 초성이랑 연결
+      if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
       {
         force2 = 1
         chojongchain = 0
@@ -292,13 +293,14 @@ function search(keyword) {
         force0 = 1
         chojongchain = 1
       }
-      chartocode =(alen-j)*27000000 +(bsplit[0]==undefined ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*90000 + (bsplit[1]==undefined ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*300 + (bsplit[2]==undefined ? 298 : bsplit[2]=='E' ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+      //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
+      chartocode =((force0*2)+force2)*270000000 + (alen-j)*27000000 +(bsplit[0]==undefined ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*90000 + (bsplit[1]==undefined ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*300 + (bsplit[2]==undefined ? 298 : bsplit[2]=='E' ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
       //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
-      if (force0==0&&force2==0&&memorization[chartocode] != undefined) //mem call
+      if (memorization[chartocode] != undefined) //있으면 불러오기
       {
         score += memorization[chartocode]
       }
-      else //계산
+      else //아니니까 계산
       {
         var tempscore = 0
         tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
@@ -306,10 +308,7 @@ function search(keyword) {
         var rel2 = relevance2(asplit[2], bsplit[2], force2)
         tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
         score+=tempscore
-        if(force0==0&&force2==0)
-        {
-          memorization[chartocode] = tempscore
-        }
+        memorization[chartocode] = tempscore
       }
     }
     score = Math.max(score, 0)
@@ -319,7 +318,7 @@ function search(keyword) {
   return scores
 }
 function relevance0(a, b, force) {
-  if (force == 1 && a != b) return -10000;
+  if (force == 1 && a != b) return -10000; //이러면 아예 제외해버린다..?
   if (a == b) return 5;
   var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㅇㅎ']
   var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㄴㄹㅁ']
