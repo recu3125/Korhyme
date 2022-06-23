@@ -292,8 +292,9 @@ function search(keyword) {
         force0 = 1
         chojongchain = 1
       }
-      chartocode =(bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*1000000 + (bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*1000 + (bsplit[2]==undefined ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
-      if (memorization[chartocode] != undefined) //mem call
+      chartocode =(alen-j)*27000000 +(bsplit[0]==undefined ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*90000 + (bsplit[1]==undefined ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*300 + (bsplit[2]==undefined ? 298 : bsplit[2]=='E' ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+      //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
+      if (force0==0&&force2==0&&memorization[chartocode] != undefined) //mem call
       {
         score += memorization[chartocode]
       }
@@ -304,8 +305,11 @@ function search(keyword) {
         tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
         var rel2 = relevance2(asplit[2], bsplit[2], force2)
         tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
-        memorization[chartocode] = tempscore
         score+=tempscore
+        if(force0==0&&force2==0)
+        {
+          memorization[chartocode] = tempscore
+        }
       }
     }
     score = Math.max(score, 0)
