@@ -86,7 +86,7 @@ app.get('/process/:key/:sel/:from', (req, res) => {
   var from = Number(req.params.from)
   res.send(processf(key, sel, from))
   var end = performance.now()
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${end - start} ms`)
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${Math.round(end - start)} ms`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
