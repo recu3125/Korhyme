@@ -5,6 +5,7 @@ const fs = require('fs')
 const Hangul = require('hangul-js');
 
 var file = [[[], []], [[], []], [[], []]]
+var filesplit = [[[], []], [[], []], [[], []]]
 // 3000 포트로 서버 오픈
 var port = 80
 app.listen(port, async function () {
@@ -12,31 +13,43 @@ app.listen(port, async function () {
   getfile(0).then(arr => {
     arr[0].map(a => { // 단어
       file[0][0].push(a)
+      filesplit[0][0].push(a.split('L'))
       file[1][0].push(a)
+      filesplit[1][0].push(a.split('L'))
       file[2][0].push(a)
+      filesplit[2][0].push(a.split('L'))
     })
     arr[1].map(a => { // 발음
       file[0][1].push(a)
+      filesplit[0][1].push(a.split('L'))
       file[1][1].push(a)
+      filesplit[1][1].push(a.split('L'))
       file[2][1].push(a)
+      filesplit[2][1].push(a.split('L'))
     })
   })
   getfile(1).then(arr => {
     arr[0].map(a => { // 단어
       file[1][0].push(a)
+      filesplit[1][0].push(a.split('L'))
       file[2][0].push(a)
+      filesplit[2][0].push(a.split('L'))
     })
     arr[1].map(a => { // 발음
       file[1][1].push(a)
+      filesplit[1][1].push(a.split('L'))
       file[2][1].push(a)
+      filesplit[2][1].push(a.split('L'))
     })
   })
   getfile(2).then(arr => {
     arr[0].map(a => { // 단어
       file[2][0].push(a)
+      filesplit[2][0].push(a.split('L'))
     })
     arr[1].map(a => { // 발음
       file[2][1].push(a)
+      filesplit[2][1].push(a.split('L'))
     })
     console.log('data loaded')
   })
@@ -88,7 +101,6 @@ function processf(key, sel, from) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
-  console.log(tosearch)
   var scores = search(tosearch)
 
 
@@ -143,15 +155,11 @@ function korformatter(commonkor) {
 function betterDisassemble(input) {
   var inlen = input.length
   var out = ''
-  if (inlen <= 10) {
-    return Hangul.disassemble(input).join('')
-  }
-  for (var i = 0; i < inlen - 10; i += 10) {
-    var sub = Hangul.disassemble(input.substring(i, i + 10)).join('')
+  var cutlength = 1
+  for (var i = 0; i < inlen - 1; i += 1) {
+    var sub = Hangul.disassemble(input[i]).join('')
     out += sub
   }
-  var fin = Hangul.disassemble(input.substring(Math.floor(inlen / 10) * 10, inlen)).join('')
-  out += fin
   return out
 }
 
@@ -252,7 +260,7 @@ function stdpron(a) {
 }
 
 function search(keyword) {
-  var memorization = [] //한글자당 값 기억용 배열(짱큼)
+  var charmem = [] //한글자당 값 기억용 배열(짱큼)
   var pronslist = file[sel][1] 
   var scores = []
   var len = pronslist.length
@@ -261,7 +269,7 @@ function search(keyword) {
   for (var i = 0; i < len; i++) { //단어 vs 단어 비교
     var a = ao //입력 단어 발음
     var alen = aleno //길이
-    var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
+    var b = filesplit[sel][1][i]  // 비교할 단어 발음
     var blen = b.length //길이
     if (alen < blen) {
       b = b.slice(-alen)
@@ -282,12 +290,12 @@ function search(keyword) {
       bsplit = [b[j][0],b[j][2],b[j][4]]
       var force0 = 0 //무조건 같게
       var force2 = 0 //무조건 같게
-      if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
+      if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex)
       {
         force2 = 1
         chojongchain = 0
       }
-      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ' ||
+      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ' || //가이 나이 등 발음 부드러운거 결과도 부드럼게(음절차이안나게) 인데 고민필요
         j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ') // 이번 초성이 이전 종성이랑 연결
       {
         force0 = 1
@@ -296,19 +304,40 @@ function search(keyword) {
       //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
       chartocode =((force0*2)+force2)*270000000 + (alen-j)*27000000 +(bsplit[0]==undefined ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*90000 + (bsplit[1]==undefined ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*300 + (bsplit[2]==undefined ? 298 : bsplit[2]=='E' ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
       //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
-      if (memorization[chartocode] != undefined) //있으면 불러오기
+      if (charmem[chartocode] != undefined) //있으면 불러오기
       {
-        score += memorization[chartocode]
+        score += charmem[chartocode]
       }
       else //아니니까 계산
       {
+        //relevance 메모라이제이션..인데 안빨라짐
+            // jamomem = [[[],[]],[[]],[[],[]]]
+            // jamotocode0 =((asplit[0]==undefined) ? 299 : asplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)*300 + (bsplit[0]==undefined) ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+            // jamotocode1 =((asplit[1]==undefined) ? 299 : asplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)*300 + (bsplit[1]==undefined) ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))
+            // jamotocode2 =((asplit[2]=='E') ? 298 : (asplit[2]==undefined) ? 299 : asplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)*300 + (bsplit[2]=='E') ? 298 : (bsplit[2]==undefined) ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+            // var tempscore = 0
+            // if(jamomem[0][force0][jamotocode0] == undefined){
+            //   jamomem[0][force0][jamotocode0] = relevance0(asplit[0], bsplit[0], force0)
+            // }
+            // tempscore += jamomem[0][force0][jamotocode0] * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
+            
+            // if(jamomem[1][jamotocode0] == undefined){
+            //   jamomem[1][jamotocode0] = relevance1(asplit[1], bsplit[1])
+            // }
+            // tempscore += jamomem[1][jamotocode0] * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
+
+            // if(jamomem[2][force2][jamotocode0] == undefined){
+            //   jamomem[2][force2][jamotocode0] = relevance2(asplit[2], bsplit[2], force2)
+            // }
+            // tempscore += jamomem[2][force2][jamotocode0] * (j == (alen - 1) ? jamomem[2][force2][jamotocode0] >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
         var tempscore = 0
         tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
         tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
         var rel2 = relevance2(asplit[2], bsplit[2], force2)
         tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+      
         score+=tempscore
-        memorization[chartocode] = tempscore
+        charmem[chartocode] = tempscore
       }
     }
     score = Math.max(score, 0)
