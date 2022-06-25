@@ -16,9 +16,9 @@ app.listen(port, async function () {
       file[2][0].push(a)
     })
     arr[1].map(a => { // 발음
-      file[0][1].push(a)
-      file[1][1].push(a)
-      file[2][1].push(a)
+      file[0][1].push(a.split('L'))
+      file[1][1].push(a.split('L'))
+      file[2][1].push(a.split('L'))
     })
   })
   getfile(1).then(arr => {
@@ -27,8 +27,8 @@ app.listen(port, async function () {
       file[2][0].push(a)
     })
     arr[1].map(a => { // 발음
-      file[1][1].push(a)
-      file[2][1].push(a)
+      file[1][1].push(a.split('L'))
+      file[2][1].push(a.split('L'))
     })
   })
   getfile(2).then(arr => {
@@ -36,7 +36,7 @@ app.listen(port, async function () {
       file[2][0].push(a)
     })
     arr[1].map(a => { // 발음
-      file[2][1].push(a)
+      file[2][1].push(a.split('L'))
     })
     console.log('data loaded')
   })
@@ -284,7 +284,7 @@ function search(keyword) {
   for (var i = 0; i < len; i++) { //단어 vs 단어 비교
     var a = ao //입력 단어 발음
     var alen = aleno //길이
-    var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
+    var b = pronslist[i] // 비교할 단어 발음
     var blen = b.length //길이
     if (alen < blen) {
       b = b.slice(-alen)
