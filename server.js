@@ -67,13 +67,13 @@ app.get('/sitemap', (req, res) => {
 
 var sel
 app.get('/process/:key/:sel/:from', (req, res) => {
-  var start = +new Date()
   var key = req.params.key
   sel = Number(req.params.sel)
   var from = Number(req.params.from)
+  var start = +new Date()
   res.send(processf(key, sel, from))
-  var end =  +new Date()
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${end-start} ms`)
+  var end = +new Date()
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${end - start} ms`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
@@ -88,20 +88,43 @@ function processf(key, sel, from) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
-  console.log(tosearch)
   var scores = search(tosearch)
 
+  // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
-  // 정렬후 출력
-  var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
+  // var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
+  // var words = file[sel][0]
+  // var outputlist = [
+  //   ['' + words[result[from]], Math.round(scores[result[from]] * 4)]
+  // ]
+  // for (var i = from + 1; i < from + 200; i++) {
+  //   var word = ('' + words[result[i]])
+  //   outputlist.push([word, Math.round(scores[result[i]] * 4)])
+  // }
+
+  //카운팅 소트(역순)
+  var len = scores.length
+  var maxvalue = 300
+  var sortcount = Array(maxvalue).fill(0)
+  var orderresult = []
   var words = file[sel][0]
-  var outputlist = [
-    ['' + words[result[from]], Math.round(scores[result[from]] * 4)]
-  ]
-  for (var i = from + 1; i < from + 200; i++) {
-    var word = ('' + words[result[i]])
-    outputlist.push([word, Math.round(scores[result[i]] * 4)])
+  outputlist = []
+  for (var i = 0; i < len; i++) {
+    sortcount[scores[i]] += 1
   }
+  for (var i = maxvalue - 2; i >= 0; i--) //역순
+  {
+    sortcount[i] += sortcount[i + 1]
+  }
+  for (var i = 0; i < len; i++) {
+    sortcount[scores[i]] -= 1
+    orderresult[sortcount[scores[i]]] = i
+  }
+  for (var i = from; i < from + 200; i++) {
+    var word = ('' + words[orderresult[i]])
+    outputlist.push([word, scores[orderresult[i]]])
+  }
+
   return JSON.stringify(outputlist)
 }
 
@@ -253,7 +276,7 @@ function stdpron(a) {
 
 function search(keyword) {
   var memorization = [] //한글자당 값 기억용 배열(짱큼)
-  var pronslist = file[sel][1] 
+  var pronslist = file[sel][1]
   var scores = []
   var len = pronslist.length
   var ao = keyword.split('L')
@@ -278,8 +301,8 @@ function search(keyword) {
     for (var j = 0; j < alen; j++) { //글자 vs 글자 비교
       var befasplit = asplit
       var befbsplit = bsplit
-      asplit = [a[j][0],a[j][2],a[j][4]] //초,중,종성
-      bsplit = [b[j][0],b[j][2],b[j][4]]
+      asplit = [a[j][0], a[j][2], a[j][4]] //초,중,종성
+      bsplit = [b[j][0], b[j][2], b[j][4]]
       var force0 = 0 //무조건 같게
       var force2 = 0 //무조건 같게
       if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
@@ -294,7 +317,7 @@ function search(keyword) {
         chojongchain = 1
       }
       //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
-      chartocode =((force0*2)+force2)*270000000 + (alen-j)*27000000 +(bsplit[0]==undefined ? 299 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0))*90000 + (bsplit[1]==undefined ? 299 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0))*300 + (bsplit[2]==undefined ? 298 : bsplit[2]=='E' ? 299 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0))
+      chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
       //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
       if (memorization[chartocode] != undefined) //있으면 불러오기
       {
@@ -307,12 +330,11 @@ function search(keyword) {
         tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
         var rel2 = relevance2(asplit[2], bsplit[2], force2)
         tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
-        score+=tempscore
+        score += tempscore
         memorization[chartocode] = tempscore
       }
     }
-    score = Math.max(score, 0)
-    score /= aleno
+    score = Math.round(Math.max(score, 0) / aleno * 4)
     scores.push(score)
   }
   return scores
