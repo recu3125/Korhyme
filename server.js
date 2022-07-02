@@ -75,7 +75,7 @@ app.get('/process/:key/:sel/:from/:min/:max', (req, res) => {
   var start = +new Date()
   res.send(processf(key, sel, from, minlen, maxlen))
   var end = +new Date()
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toString().slice(0,-10)}`)
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"}).toString()}`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
