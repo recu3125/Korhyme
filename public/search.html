@@ -167,6 +167,11 @@
       <label id="selectorlabel" style="font-size: 22px;margin-top: 15px; text-align: right; color: #FFFFFF;">
         <b>다양</b> : 느린 검색, 많은 값
       </label>
+      <br>
+      <label>
+        <input value="2" type="number" id="min" min="2" max="6" style=" color: #000000; margin-top:10px; font-size: 14pt; background-color: #FFFFFF23" onchange="minchange()" oninput="minchange()">음절부터
+        <input value="6" type="number" id="max" min="2" max="6" style=" color: #000000; margin-top:10px; font-size: 14pt; background-color: #FFFFFF23" onchange="maxchange()" oninput="maxchange()">음절까지
+      </label>
       <center id="tbcen" style="margin-top: 20px;">
         <table id="tbl"></table>
       </center>

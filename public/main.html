@@ -151,7 +151,7 @@
         src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=http%3A%2F%2Fkorhyme.ml&count_bg=%23F5C12F&title_bg=%231CA7A0&icon=&icon_color=%23FFFFFF&title=%EB%B0%A9%EB%AC%B8+%EC%88%98&edge_flat=false" /></a>
     <hr id="hr" style="width: 570px ;background-color:#1ca7a0; border: solid 3px #1ca7a0;">
     <div id="div1"
-      style="overflow:hidden ;border-radius: 4px;width:500px; height: 140px ; background-color: #00000043; margin-top: 40px; margin-bottom: 0px;">
+      style="overflow:hidden ;border-radius: 4px;width:500px; height: 160px ; background-color: #00000043; margin-top: 40px; margin-bottom: 0px;">
 
       <div id="inputdiv"
         style="height:50px; width: calc(100%-6px); margin-top: 30px; margin-bottom: 3px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
@@ -167,6 +167,11 @@
         max="2" style="width: 200px; height: 10px; float: left;margin-top: 15px;" value="2">
       <label id="selectorlabel" style="font-size: 22px;margin-top: 15px; text-align: right; color: #FFFFFF;">
         <b>다양</b> : 느린 검색, 많은 값
+      </label>
+      <br>
+      <label>
+        <input value="2" type="number" id="min" min="2" max="6" style="margin-top:10px; font-size: 14pt; color: #000000; background-color: #FFFFFF23" onchange="minchange()" oninput="minchange()">음절부터
+        <input value="6" type="number" id="max" min="2" max="6" style="margin-top:10px; font-size: 14pt; color: #000000; background-color: #FFFFFF23" onchange="maxchange()" oninput="maxchange()">음절까지
       </label>
     </div>
     <a href="https://github.com/recu3125/Korhyme_AWS" style="color:white"> 사이트가 유용하다면 클릭해 스타를 눌러주세요!</a>

@@ -6,6 +6,27 @@ window.addEventListener('wheel',function(e)
   isMouseScroll = true;
 });
 
+function minchange(){
+  if(document.getElementById('min').value>6)
+  {
+    document.getElementById('min').value=Math.max(2,Math.min(6,document.getElementById('min').value%10))
+  }
+  if(document.getElementById('min').value<2)
+  {
+    document.getElementById('min').value=2
+  }
+}
+function maxchange(){
+  if(document.getElementById('max').value>6)
+  {
+    document.getElementById('max').value=Math.max(2,Math.min(6,document.getElementById('max').value%10))
+  }
+  if(document.getElementById('max').value<document.getElementById('min').value)
+  {
+    document.getElementById('max').value=document.getElementById('min').value
+  }
+}
+
 var resultsnowshown = 0
 var islight = 1
 function viewportset() {
@@ -21,6 +42,8 @@ function viewportset() {
 function darktgl() {
   if (islight == 1) {
     islight = 0
+    document.getElementById('min').style.color = "#FFFFFF"
+    document.getElementById('max').style.color = "#FFFFFF"
     document.getElementById('darktgl').style.backgroundColor = "#FFFFFF"
     document.getElementById('backgr').style.background = "linear-gradient(90deg, #021515,#042525)"
     document.getElementById('backgr').style.color = "#FFFFFF"
@@ -46,6 +69,8 @@ function darktgl() {
   }
   else {
     islight = 1
+    document.getElementById('min').style.color = "#000000"
+    document.getElementById('max').style.color = "#000000"
     document.getElementById('darktgl').style.backgroundColor = "#000000"
     document.getElementById('backgr').style.background = "linear-gradient(90deg, #f5c12f,#ffdc7b)"
     document.getElementById('backgr').style.color = "#000000"
@@ -103,6 +128,8 @@ function initinput() {
     '<b>보통</b> : 기본 검색, 보통 값',
     '<b>다양</b> : 느린 검색, 많은 값']
   document.getElementById("input").value = getParameter("key")
+  document.getElementById("min").value = Math.floor(getParameter("minmax")/10)
+  document.getElementById("max").value = getParameter("minmax")%10
   document.getElementById('selector').value = getParameter("sel")
   document.getElementById('selectorlabel').innerHTML = selectorarr[getParameter("sel")]
   islight = (getParameter("dark")) == 1 ? 1 : 0
@@ -115,7 +142,7 @@ async function refillres(from) {
     location.href ='/'
   }
   await $.ajax({
-    url: `/process/${key}/${getParameter("sel")}/${from}`,
+    url: `/process/${key}/${getParameter("sel")}/${from}/${Math.floor(getParameter("minmax")/10)}/${getParameter("minmax")%10}`,
     type: "GET",
     success: function (result) {
       if (result) {
@@ -235,7 +262,7 @@ function populateTable(table, rows, cells) {
 function redir() {
   clearInterval(checkinterval);
   var redinp = document.getElementById("input").value
-  location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
+  location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value+ "\&minmax=" + document.getElementById('min').value + document.getElementById('max').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
 }
 function getParameter(name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");

@@ -66,21 +66,23 @@ app.get('/sitemap', (req, res) => {
 })
 
 var sel
-app.get('/process/:key/:sel/:from', (req, res) => {
+app.get('/process/:key/:sel/:from/:min/:max', (req, res) => {
   var key = req.params.key
   sel = Number(req.params.sel)
   var from = Number(req.params.from)
+  var minlen = Number(req.params.min)
+  var maxlen = Number(req.params.max)
   var start = +new Date()
-  res.send(processf(key, sel, from))
+  res.send(processf(key, sel, from, minlen, maxlen))
   var end = +new Date()
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, time:${end - start} ms`)
+  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toString().slice(0,-10)}`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
 app.use('/sicon', express.static(__dirname + '/icon'));
 app.use('/sfonts', express.static(__dirname + '/fonts'));
 
-function processf(key, sel, from) {
+function processf(key, sel, from, minlen, maxlen) {
   if (key == '') {
     location.href = '/'
     return '0';
@@ -88,7 +90,7 @@ function processf(key, sel, from) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
-  var scores = search(tosearch)
+  var scores = search(tosearch,minlen,maxlen)
 
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
@@ -274,18 +276,24 @@ function stdpron(a) {
   return a;
 }
 
-function search(keyword) {
+function search(keyword,minlen,maxlen) {
   var memorization = [] //한글자당 값 기억용 배열(짱큼)
+  var wordslist = file[sel][0]
   var pronslist = file[sel][1]
   var scores = []
   var len = pronslist.length
   var ao = keyword.split('L')
   var aleno = ao.length
   for (var i = 0; i < len; i++) { //단어 vs 단어 비교
+    if(wordslist[i].length<minlen||wordslist[i].length>maxlen){
+      scores.push(0)
+      continue;
+    }
     var a = ao //입력 단어 발음
     var alen = aleno //길이
     var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
     var blen = b.length //길이
+      
     if (alen < blen) {
       b = b.slice(-alen)
       blen = alen
