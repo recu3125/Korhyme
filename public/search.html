@@ -123,11 +123,11 @@
   <div id="topbar"
     style="position: fixed; left: 0;top:0 ;width: 100%;height: 50px; background-color: #777766; display: block; z-index: 97;">
     <button id="darktgl"
-      style="border-radius: 20%;margin: 5px;margin-left: calc(50vw - 300px) ;border: solid 2px #FFF; background-color: #000000;border-radius: 20%; height: 40px;width: 40px;float: left;background-image: url('https://cdn2.iconfinder.com/data/icons/picons-basic-3/57/basic3-102_visibility_contrast_brightness-256.png'); background-size: 90%; background-position: center; background-repeat: no-repeat;"
+      style="border-radius: 20%;margin: 5px;margin-left: calc(50vw - 300px) ;border: solid 2px #FFF; background-color: #000000;border-radius: 20%; height: 40px;width: 40px;float: left;overflow: hidden; background-image: url('https://cdn2.iconfinder.com/data/icons/picons-basic-3/57/basic3-102_visibility_contrast_brightness-256.png'); background-size: 90%; background-position: center; background-repeat: no-repeat;"
       onclick="darktgl()">
     </button>
     <button id="darktgl"
-      style="border-radius: 20%;margin: 5px;border: solid 2px #FFF; background-color: #444444;border-radius: 20%; height: 40px;width: 80px;float: left;color: white; margin: 5px;"
+      style="border-radius: 20%;margin: 5px;border: solid 2px #FFF; background-color: #444444;border-radius: 20%; height: 40px;width: 80px;float: left;overflow: hidden; color: white; margin: 5px;"
       onclick="location.href = '/info'">
       정보
     </button>
@@ -155,15 +155,15 @@
       <div id="inputdiv"
         style="height:50px; width: 100%; margin-top: 30px; margin-bottom: 3px; background-color: #1ca7a0; border: solid 3px #1ca7a0;">
         <input id="input" size='    ' maxlength='60' type="text"
-          style="border: solid 2px #1ca7a0;height: 45px; width: 437px; font-size: 24pt; float: left;"
+          style="border: solid 2px #1ca7a0;height: 45px; width: 437px; font-size: 24pt; float: left;overflow: hidden; "
           onkeypress="if( event.keyCode == 13 ){redir()}">
         <button id="search"
-          style="border: solid 3px #1ca7a0; background-color: #1ca7a0;border-radius: 0px; height: 50px;width: 50px;float: left;background-image: url('https://i.ibb.co/SBrgyXM/search-13-xxl.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
+          style="border: solid 3px #1ca7a0; background-color: #1ca7a0;border-radius: 0px; height: 50px;width: 50px;float: left;overflow: hidden; background-image: url('https://i.ibb.co/SBrgyXM/search-13-xxl.png'); background-size: 80%; background-position: center; background-repeat: no-repeat;"
           onclick="redir()">
         </button>
       </div>
       <input onchange="selectorchange()" oninput="selectorchange()" type="range" class="slider" id="selector" min="0"
-        max="2" style="width: 200px; height: 10px; float: left;margin-top: 15px;" value="2; z-index = 0">
+        max="2" style="width: 200px; height: 10px; float: left;margin-top: 15px;overflow: visible; " value="2; z-index = 0">
       <label id="selectorlabel" style="font-size: 22px;margin-top: 15px; text-align: right; color: #FFFFFF;">
         <b>다양</b> : 느린 검색, 많은 값
       </label>
