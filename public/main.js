@@ -1,29 +1,24 @@
 var isMouseScroll = false;
 
-window.addEventListener('wheel',function(e)
-{
+window.addEventListener('wheel', function (e) {
   console.log('mouse wheel');
   isMouseScroll = true;
 });
 
-function minchange(){
-  if(document.getElementById('min').value>6)
-  {
-    document.getElementById('min').value=Math.max(2,Math.min(6,document.getElementById('min').value%10))
+function minchange() {
+  if (document.getElementById('min').value > 6) {
+    document.getElementById('min').value = Math.max(2, Math.min(6, document.getElementById('min').value % 10))
   }
-  if(document.getElementById('min').value<2)
-  {
-    document.getElementById('min').value=2
+  if (document.getElementById('min').value < 2) {
+    document.getElementById('min').value = 2
   }
 }
-function maxchange(){
-  if(document.getElementById('max').value>6)
-  {
-    document.getElementById('max').value=Math.max(2,Math.min(6,document.getElementById('max').value%10))
+function maxchange() {
+  if (document.getElementById('max').value > 6) {
+    document.getElementById('max').value = Math.max(2, Math.min(6, document.getElementById('max').value % 10))
   }
-  if(document.getElementById('max').value<document.getElementById('min').value)
-  {
-    document.getElementById('max').value=document.getElementById('min').value
+  if (document.getElementById('max').value < document.getElementById('min').value) {
+    document.getElementById('max').value = document.getElementById('min').value
   }
 }
 
@@ -110,9 +105,8 @@ function scrollFunction() {
 }
 function topFunction() {
   pos = 0
-  if(!isMouseScroll)
-  {
-    window.scrollTo({top: 0, behavior: 'smooth'});
+  if (!isMouseScroll) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 function selectorchange() {
@@ -128,8 +122,8 @@ function initinput() {
     '<b>보통</b> : 기본 검색, 보통 값',
     '<b>다양</b> : 느린 검색, 많은 값']
   document.getElementById("input").value = getParameter("key")
-  document.getElementById("min").value = Math.floor(getParameter("minmax")/10)
-  document.getElementById("max").value = getParameter("minmax")%10
+  document.getElementById("min").value = Math.floor(getParameter("minmax") / 10)
+  document.getElementById("max").value = getParameter("minmax") % 10
   document.getElementById('selector').value = getParameter("sel")
   document.getElementById('selectorlabel').innerHTML = selectorarr[getParameter("sel")]
   islight = (getParameter("dark")) == 1 ? 1 : 0
@@ -138,11 +132,11 @@ function initinput() {
 
 async function refillres(from) {
   var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-9)
-  if(key == ''){
-    location.href ='/'
+  if (key == '') {
+    location.href = '/'
   }
   await $.ajax({
-    url: `/process/${key}/${getParameter("sel")}/${from}/${Math.floor(getParameter("minmax")/10)}/${getParameter("minmax")%10}`,
+    url: `/process/${key}/${getParameter("sel")}/${from}/${Math.floor(getParameter("minmax") / 10)}/${getParameter("minmax") % 10}`,
     type: "GET",
     success: function (result) {
       if (result) {
@@ -217,10 +211,12 @@ function populateTable(table, rows, cells) {
   document.getElementById("tbl").remove()
   if (!table) table = document.createElement('table');
   table.id = "tbl"
+  table.style.textAlign = 'left'
   table.style.backgroundColor = '#000000'
   table.style.color = 'rgb(0, 0, 0)'
   table.style.border = '1px solid black'
   table.style.width = '80%'
+  table.style.margin = 'auto'
 
   for (var i = 0; i < rows; ++i) {
     var row = document.createElement('tr');
@@ -233,7 +229,6 @@ function populateTable(table, rows, cells) {
       if (i == 0) {
         row.style.backgroundColor = '#1ca7a0';
         row.style.color = '#FFFFFF';
-
       }
       else if (i % 2 == 0)
         row.style.backgroundColor = '#FFFFFF';
@@ -253,7 +248,7 @@ function populateTable(table, rows, cells) {
     }
     row.style.border = '2px solid black'
     row.style.fontSize = '17pt'
-    row.style.text_align = 'center'
+    row.style.text_align = 'left'
     row.style.box_sizing = 'border-box'
     table.appendChild(row);
   }
@@ -262,7 +257,7 @@ function populateTable(table, rows, cells) {
 function redir() {
   clearInterval(checkinterval);
   var redinp = document.getElementById("input").value
-  location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value+ "\&minmax=" + document.getElementById('min').value + document.getElementById('max').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
+  location.href = '/search?key=' + redinp + "\&sel=" + document.getElementById('selector').value + "\&minmax=" + document.getElementById('min').value + document.getElementById('max').value + "\&dark=" + Number(islight == 1 ? 0 : 1)
 }
 function getParameter(name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
