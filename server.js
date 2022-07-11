@@ -276,8 +276,8 @@ function stdpron(a) {
   return a;
 }
 
+var memoization = [] //한글자당 값 기억용 배열(짱큼)
 function search(keyword,minlen,maxlen) {
-  var memorization = [] //한글자당 값 기억용 배열(짱큼)
   var wordslist = file[sel][0]
   var pronslist = file[sel][1]
   var scores = []
@@ -327,9 +327,9 @@ function search(keyword,minlen,maxlen) {
       //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
       chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
       //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
-      if (memorization[chartocode] != undefined) //있으면 불러오기
+      if (memoization[chartocode] != undefined) //있으면 불러오기
       {
-        score += memorization[chartocode]
+        score += memoization[chartocode]
       }
       else //아니니까 계산
       {
@@ -339,7 +339,7 @@ function search(keyword,minlen,maxlen) {
         var rel2 = relevance2(asplit[2], bsplit[2], force2)
         tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
         score += tempscore
-        memorization[chartocode] = tempscore
+        memoization[chartocode] = tempscore
       }
     }
     score = Math.round(Math.max(score, 0) / aleno * 4)
