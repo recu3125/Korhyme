@@ -90,6 +90,10 @@ function processf(key, sel, from, minlen, maxlen) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
+  if(minlen<2||maxlen>6){
+    minlen=2
+    maxlen=6
+  }
   var scores = search(tosearch,minlen,maxlen)
 
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌

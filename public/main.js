@@ -97,14 +97,14 @@ function darktgl() {
   }
 }
 
-var mybutton
+var topbutton = document.getElementById("topBtn");
 window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
   if (location.pathname.startsWith('/search')) {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      mybutton.style.display = "block";
+      topbutton.style.display = "block";
     } else {
-      mybutton.style.display = "none";
+      topbutton.style.display = "none";
     }
   }
 }
@@ -157,8 +157,7 @@ async function refillres(from) {
 
 var checkinterval
 var resultlist = []
-async function buttonclick() {
-  mybutton = document.getElementById("myBtn");
+async function searchinit() {
   await refillres(0)
   resultlist.unshift(['단어', '점수'])
   resultsnowshown += 50;
@@ -284,6 +283,8 @@ function databasemaker(filename) {
 
 function init() {
   new SmoothScroll(document, 120, 12)
+  setInterval(minchange, 100);
+  setInterval(maxchange, 100);
 }
 
 
