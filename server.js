@@ -280,8 +280,9 @@ function stdpron(a) {
   return a;
 }
 
-var memoization = [] //한글자당 값 기억용 배열(짱큼)
+
 function search(keyword,minlen,maxlen) {
+  var memoization = [] //한글자당 값 기억용 배열(짱큼)
   var wordslist = file[sel][0]
   var pronslist = file[sel][1]
   var scores = []
