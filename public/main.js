@@ -1,7 +1,6 @@
 var isMouseScroll = false;
 
 window.addEventListener('wheel', function (e) {
-  console.log('mouse wheel');
   isMouseScroll = true;
 });
 
@@ -167,7 +166,7 @@ async function buttonclick() {
     .appendChild(populateTable(null, 50, 2));
   document.getElementById('loading').style.display = 'none'
   document.getElementById('scrollload').style.display = 'block'
-  checkinterval = setInterval(checkaddrow, 1000);
+  checkinterval = setInterval(checkaddrow, 100);
 }
 
 var isloading = 0
@@ -177,39 +176,43 @@ async function checkaddrow() {
     isloading = 1
     clearInterval(checkinterval);
     refillres(resultsnowshown + 100)
-    checkinterval = setInterval(checkaddrow, 1000);
+    checkinterval = setInterval(checkaddrow, 100);
   }
   if (location.pathname.startsWith('/search') && (window.innerHeight + window.scrollY) >= document.body.offsetHeight && resultlist.length >= 50) {
-    resultsnowshown += 50
-    var table = document.getElementById("tbl")
-    for (var i = resultsnowshown; i < resultsnowshown + 50; ++i) {
-      var row = document.createElement('tr');
-      rowres = resultlist.shift()
-      var word = ('' + rowres[0])
-      row.appendChild(document.createElement('td'));
-      row.cells[0].appendChild(document.createTextNode(word));
-      row.appendChild(document.createElement('td'));
-      row.cells[1].appendChild(document.createTextNode(Math.round(rowres[1])));
+    clearInterval(checkinterval);
+    setTimeout(() => {
+      resultsnowshown += 50
+      var table = document.getElementById("tbl")
+      for (var i = resultsnowshown; i < resultsnowshown + 50; ++i) {
+        var row = document.createElement('tr');
+        rowres = resultlist.shift()
+        var word = ('' + rowres[0])
+        row.appendChild(document.createElement('td'));
+        row.cells[0].appendChild(document.createTextNode(word));
+        row.appendChild(document.createElement('td'));
+        row.cells[1].appendChild(document.createTextNode(Math.round(rowres[1])));
 
-      if (islight) {
-        if (i % 2 == 0)
-          row.style.backgroundColor = '#FFFFFF';
-        else
-          row.style.backgroundColor = '#DDDDDD';
+        if (islight) {
+          if (i % 2 == 0)
+            row.style.backgroundColor = '#FFFFFF';
+          else
+            row.style.backgroundColor = '#DDDDDD';
+        }
+        else {
+          if (i % 2 == 0)
+            row.style.backgroundColor = '#222222';
+          else
+            row.style.backgroundColor = '#111111';
+          row.style.color = '#FFFFFF';
+        }
+        row.style.border = '2px solid black'
+        row.style.text_align = 'center'
+        row.style.fontSize = '17pt'
+        row.style.box_sizing = 'border-box'
+        table.appendChild(row);
       }
-      else {
-        if (i % 2 == 0)
-          row.style.backgroundColor = '#222222';
-        else
-          row.style.backgroundColor = '#111111';
-        row.style.color = '#FFFFFF';
-      }
-      row.style.border = '2px solid black'
-      row.style.text_align = 'center'
-      row.style.fontSize = '17pt'
-      row.style.box_sizing = 'border-box'
-      table.appendChild(row);
-    }
+      checkinterval = setInterval(checkaddrow, 100);
+    }, 600);
   }
 }
 
