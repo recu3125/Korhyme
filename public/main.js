@@ -9,6 +9,9 @@ function minchange() {
   if (document.getElementById('min').value > 6) {
     document.getElementById('min').value = Math.max(2, Math.min(6, document.getElementById('min').value % 10))
   }
+  if (document.getElementById('min').value > document.getElementById('max').value) {
+    document.getElementById('min').value = document.getElementById('max').value
+  }
   if (document.getElementById('min').value < 2) {
     document.getElementById('min').value = 2
   }
@@ -19,6 +22,9 @@ function maxchange() {
   }
   if (document.getElementById('max').value < document.getElementById('min').value) {
     document.getElementById('max').value = document.getElementById('min').value
+  }
+  if (document.getElementById('max').value < 2) {
+    document.getElementById('max').value = 2
   }
 }
 
