@@ -54,6 +54,10 @@ app.get('/info', (req, res) => {
   res.sendFile(__dirname + "/public/info.html")
 })
 
+app.get('/qna', (req, res) => {
+  res.sendFile(__dirname + "/public/qna.html")
+})
+
 app.get('/naver563cb392f54442bd9c3cc519ad255616.html', (req, res) => {
   res.sendFile(__dirname + "/naver563cb392f54442bd9c3cc519ad255616.html")
 })
