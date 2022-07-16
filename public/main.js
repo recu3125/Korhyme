@@ -97,9 +97,9 @@ function darktgl() {
   }
 }
 
-var topbutton = document.getElementById("topBtn");
 window.onscroll = function () { scrollFunction() };
 function scrollFunction() {
+  var topbutton = document.getElementById("topBtn");
   if (location.pathname.startsWith('/search')) {
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
       topbutton.style.display = "block";
