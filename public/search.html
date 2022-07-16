@@ -23,7 +23,7 @@
   <nav id="topbar" class="topbar">
     <button id="darktgl" class="darktgl" onclick="darktgl()">
     </button>
-    <button class="topbarbtn" style="width: 80px;"  onclick="location.href = '/info'">
+    <button class="topbarbtn" style="width: 80px;" onclick="location.href = '/info'">
       정보
     </button>
     <button class="topbarbtn" style="width: 100px;" onclick="location.href = '/qna'">
@@ -32,7 +32,7 @@
   </nav>
 </head>
 
-<body onload="init(); searchinit()" id="backgr" class="body">
+<body onload="init(); searchinit()" id="backgr" class="body" onkeypress="if( event.keyCode == 13 ){redir()}">
 
   <button onclick="topFunction()" id="topBtn"><b>ㅅ</b></button>
   <div id="loading" class="loading">
@@ -44,9 +44,9 @@
   <h2>
     한국어 라임 검색기
   </h2>
-  <img class = "searchcount"/></a>
+  <img class="searchcount" /></a>
   <hr id="hr">
-  <div id="div1" class="blackdiv" >
+  <div id="div1" class="blackdiv">
     <div id="inputdiv" class="inputdiv">
       <input id="input" class="input" size='    ' maxlength='60' type="text" onkeypress="if( event.keyCode == 13 ){redir()}">
       <button id="search" class="search" onclick="redir()">
@@ -58,11 +58,11 @@
     </label>
     <br>
     <label>
-      <input class="sylinput" value="2" type="number" id="min" min="2" max="6" onchange="minchange()" oninput="minchange()">음절부터
-      <input class="sylinput" value="6" type="number" id="max" min="2" max="6" onchange="maxchange()" oninput="maxchange()">음절까지
+      <input class="sylinput" value="2" type="number" id="min" min="2" max="6" onchange="minchange()" oninput="minchange()" onkeypress="if( event.keyCode == 13 ){redir()}">음절부터
+      <input class="sylinput" value="6" type="number" id="max" min="2" max="6" onchange="maxchange()" oninput="maxchange()" onkeypress="if( event.keyCode == 13 ){redir()}">음절까지
     </label>
     <br>
-    <a href="https://forms.gle/Ja6ZAWKSxeVdENW96" style="font-size: 12pt; color: #0c4780;"><b>> 버그/개선점 제보<</b></a>
+    <a href="https://forms.gle/Ja6ZAWKSxeVdENW96" style="font-size: 12pt; color: #0c4780;"><b>> 버그/개선점 제보<< /b></a>
     <div id="tbcen" style="margin-top: 20px;">
       <table id="tbl"></table>
     </div>

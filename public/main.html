@@ -36,13 +36,13 @@
   </nav>
 </head>
 
-<body onload="init()" class="body" id="backgr" style="height:100vh-50px;">
+<body onload="init()" class="body" id="backgr" style="height:100vh-50px;" onkeypress="if( event.keyCode == 13 ){redir()}">
   <h1>
     Korhyme</h1>
   <h2>
     한국어 라임 검색기
   </h2>
-  <img class = "maincount"/>
+  <img class="maincount" />
   <hr id="hr">
   <div id="div1" class="blackdiv" style="height: 160px;">
     <div id="inputdiv" class="inputdiv">
@@ -56,8 +56,8 @@
     </label>
     <br>
     <label>
-      <input class="sylinput" value="2" type="number" id="min" min="2" max="6" onchange="minchange()" oninput="minchange()">음절부터
-      <input class="sylinput" value="6" type="number" id="max" min="2" max="6" onchange="maxchange()" oninput="maxchange()">음절까지
+      <input class="sylinput" value="2" type="number" id="min" min="2" max="6" onchange="minchange()" oninput="minchange()" onkeypress="if( event.keyCode == 13 ){redir()}">음절부터
+      <input class="sylinput" value="6" type="number" id="max" min="2" max="6" onchange="maxchange()" oninput="maxchange()" onkeypress="if( event.keyCode == 13 ){redir()}">음절까지
     </label>
   </div>
   <a href="https://github.com/recu3125/Korhyme_AWS" style="color:white"> 사이트가 유용하다면 클릭해 스타를 눌러주세요!</a>
