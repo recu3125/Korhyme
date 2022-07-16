@@ -85,6 +85,7 @@ app.get('/process/:key/:sel/:from/:min/:max', (req, res) => {
 app.use('/spublic', express.static(__dirname + '/public'));
 app.use('/sicon', express.static(__dirname + '/icon'));
 app.use('/sfonts', express.static(__dirname + '/fonts'));
+app.use('/scss', express.static(__dirname + '/css'));
 
 function processf(key, sel, from, minlen, maxlen) {
   if (key == '') {
@@ -396,7 +397,7 @@ function arebothin(a, b, arr) {
 }
 
 async function getfile(num) {
-  var numtopath = [__dirname + '/public/lyrics.txt', __dirname + '/public/news.txt', __dirname + '/public/dict.txt']
+  var numtopath = [__dirname + '/data/lyrics.txt', __dirname + '/data/news.txt', __dirname + '/data/dict.txt']
   var a = [],
     b = []
   return new Promise(resolve => {
