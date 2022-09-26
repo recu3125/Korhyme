@@ -136,7 +136,7 @@ function initinput() {
 }
 
 async function refillres(from) {
-  var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-9)
+  var key = getParameter("key").replace(/[^가-힣]/g, '').slice(-6)
   if (key == '') {
     location.href = '/'
   }
