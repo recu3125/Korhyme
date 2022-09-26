@@ -1,4 +1,4 @@
-## <a href = "http://korhyme.ml">korhyme.ml</a>
+## <img src="https://user-images.githubusercontent.com/68118081/192199446-ecb35afe-2ea0-4f42-bc4c-488f0bd8312c.png" width="20px"> <a href = "http://korhyme.ml">korhyme.ml</a>
 Korhyme [ᄒᆞᆫːᄅᆞ임] 은 고등학생이 혼자 만든 한국어 라임 검색기입니다.<br>
 단순한 초성/모음 검색기가 아닌, 실제 발음의 유사성을 고려해 라임이 맞는 단어 리스트를 출력합니다.<br>
 검색 결과는 점수와 함께 정렬되어 일렬로 표시됩니다.
