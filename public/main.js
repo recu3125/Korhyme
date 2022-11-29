@@ -57,6 +57,7 @@ function darktgl() {
     document.getElementById('search').style.border = 'solid 3px #f5c12f'
     document.getElementById('search').style.backgroundColor = '#f5c12f'
     document.getElementById("selector").className = 'sliderdark'
+    document.getElementById("selector2").className = 'sliderdark'
     document.getElementById("tbl").rows[0].style.backgroundColor = '#f5c12f'
     var rowCount = document.getElementById('tbl').rows.length;
     for (var i = 1; i < rowCount; i++) {
@@ -85,6 +86,7 @@ function darktgl() {
     document.getElementById('search').style.border = 'solid 3px #1ca7a0'
     document.getElementById('search').style.backgroundColor = '#1ca7a0'
     document.getElementById("selector").className = 'slider'
+    document.getElementById("selector2").className = 'slider'
     document.getElementById("tbl").rows[0].style.backgroundColor = '#1ca7a0'
     var rowCount = document.getElementById('tbl').rows.length;
     for (var i = 1; i < rowCount; i++) {
