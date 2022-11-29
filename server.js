@@ -4,7 +4,7 @@ var app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
 var timecheck = 0
-var file = [[[], []], [[], []], [[], []]]
+var file = [[[], []], [[], []], [[], []], [[], []]]
 // 3000 포트로 서버 오픈
 var port = 80
 app.listen(port, async function () {
@@ -34,9 +34,11 @@ app.listen(port, async function () {
   getfile(2).then(arr => {
     arr[0].map(a => { // 단어
       file[2][0].push(a)
+      file[3][0].push(a)
     })
     arr[1].map(a => { // 발음
       file[2][1].push(a)
+      file[3][1].push(a)
     })
     console.log('data loaded')
   })
