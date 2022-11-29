@@ -53,7 +53,7 @@
   </h2>
   <img class="maincount" />
   <hr id="hr">
-  <div id="div1" class="blackdiv" style="height: 160px;">
+  <div id="div1" class="blackdiv" style="height: 200px;">
     <div id="inputdiv" class="inputdiv">
       <input id="input" class="input" size='    ' maxlength='60' type="text" onkeypress="if( event.keyCode == 13 ){redir()}">
       <button id="search" class="search" onclick="redir()">
@@ -61,8 +61,13 @@
     </div>
     <input onchange="selectorchange()" oninput="selectorchange()" type="range" class="slider" id="selector" min="0" max="2" value="2">
     <label id="selectorlabel" class="selectorlabel">
-      <b>다양</b> : 느린 검색, 많은 값
+      <b>꼼꼼</b> : 느린 검색, 많은 값
     </label>
+    <input onchange="selectorchange2()" oninput="selectorchange2()" type="range" class="slider" id="selector2" min="0" max="1" value="1">
+    <label id="selectorlabel2" class="selectorlabel">
+      <br><b>다양</b> : 뒷부분 중복 제거
+    </label>
+
     <br>
     <label>
       <input class="sylinput" value="2" type="number" id="min" min="2" max="6" onchange="minchange()" oninput="minchange()" onkeypress="if( event.keyCode == 13 ){redir()}">음절부터

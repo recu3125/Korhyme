@@ -70,16 +70,17 @@ app.get('/sitemap', (req, res) => {
 })
 
 var sel
-app.get('/process/:key/:sel/:from/:min/:max', (req, res) => {
+app.get('/process/:key/:sel/:sel2/:from/:min/:max', (req, res) => {
   var key = req.params.key
   sel = Number(req.params.sel)
+  var sel2 = Number(req.params.sel2)
   var from = Number(req.params.from)
   var minlen = Number(req.params.min)
   var maxlen = Number(req.params.max)
   var start = +new Date()
-  res.send(processf(key, sel, from, minlen, maxlen))
+  res.send(processf(key, sel2, from, minlen, maxlen))
   var end = +new Date()
-  console.log(`sended result to client : key:${key}, sel:${sel}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", {timeZone: "Asia/Seoul"}).toString()}`)
+  console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
 })
 
 app.use('/spublic', express.static(__dirname + '/public'));
@@ -87,7 +88,7 @@ app.use('/sicon', express.static(__dirname + '/icon'));
 app.use('/sfonts', express.static(__dirname + '/fonts'));
 app.use('/scss', express.static(__dirname + '/css'));
 
-function processf(key, sel, from, minlen, maxlen) {
+function processf(key, sel2, from, minlen, maxlen) {
   if (key == '') {
     location.href = '/'
     return '0';
@@ -95,11 +96,11 @@ function processf(key, sel, from, minlen, maxlen) {
   var input = key
   var inputlen = input.length
   var tosearch = stdpron(input)
-  if(minlen<2||maxlen>6){
-    minlen=2
-    maxlen=6
+  if (minlen < 2 || maxlen > 6) {
+    minlen = 2
+    maxlen = 6
   }
-  var scores = search(tosearch,minlen,maxlen)
+  var scores = search(tosearch, minlen, maxlen)
 
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
@@ -121,19 +122,43 @@ function processf(key, sel, from, minlen, maxlen) {
   var words = file[sel][0]
   outputlist = []
   for (var i = 0; i < len; i++) {
-    sortcount[scores[i]] += 1
+    sortcount[scores[i]] += 1//점수별 나온 개수
   }
   for (var i = maxvalue - 2; i >= 0; i--) //역순
   {
-    sortcount[i] += sortcount[i + 1]
+    sortcount[i] += sortcount[i + 1]//다더해서 위치
   }
   for (var i = 0; i < len; i++) {
     sortcount[scores[i]] -= 1
     orderresult[sortcount[scores[i]]] = i
   }
-  for (var i = from; i < from + 200; i++) {
-    var word = ('' + words[orderresult[i]])
-    outputlist.push([word, scores[orderresult[i]]])
+
+  if (sel2==1) {
+    outlen = 0
+    alreadythere = []
+    for (var i = 0; outlen < 200; i++) {
+      var word = ('' + words[orderresult[i]])
+
+      isalreadythere = false
+      allen = alreadythere.length
+      for (j=0;j<allen;j++) {
+        if (word.slice(-2) == alreadythere[j]) {
+          isalreadythere = true
+          break
+        }
+      }
+      if (!isalreadythere) {
+        alreadythere.push(word.slice(-2))
+        outputlist.push([word, scores[orderresult[i]]])
+        outlen += 1
+      }
+    }
+  }
+  else {
+    for (var i = from; i < from + 200; i++) {
+      var word = ('' + words[orderresult[i]])
+      outputlist.push([word, scores[orderresult[i]]])
+    }
   }
 
   return JSON.stringify(outputlist)
@@ -286,7 +311,7 @@ function stdpron(a) {
 }
 
 
-function search(keyword,minlen,maxlen) {
+function search(keyword, minlen, maxlen) {
   var memoization = [] //한글자당 값 기억용 배열(짱큼)
   var wordslist = file[sel][0]
   var pronslist = file[sel][1]
@@ -295,7 +320,7 @@ function search(keyword,minlen,maxlen) {
   var ao = keyword.split('L')
   var aleno = ao.length
   for (var i = 0; i < len; i++) { //단어 vs 단어 비교
-    if(wordslist[i].length<minlen||wordslist[i].length>maxlen){
+    if (wordslist[i].length < minlen || wordslist[i].length > maxlen) {
       scores.push(0)
       continue;
     }
@@ -303,7 +328,7 @@ function search(keyword,minlen,maxlen) {
     var alen = aleno //길이
     var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
     var blen = b.length //길이
-      
+
     if (alen < blen) {
       b = b.slice(-alen)
       blen = alen
