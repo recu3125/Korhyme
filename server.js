@@ -138,7 +138,7 @@ function processf(key, sel2, from, minlen, maxlen) {
   if (sel2==1) {
     outlen = 0
     alreadythere = []
-    for (var i = 0; outlen < 200; i++) {
+    for (var i = 0; outlen < from + 200; i++) {
       var word = ('' + words[orderresult[i]])
 
       isalreadythere = false
@@ -163,7 +163,7 @@ function processf(key, sel2, from, minlen, maxlen) {
     }
   }
 
-  return JSON.stringify(outputlist)
+  return JSON.stringify(outputlist.slice(-200))
 }
 
 
