@@ -129,9 +129,9 @@ function selectorchange2() {
 }
 function initinput() {
   var selectorarr = [
-    '<b>빠름</b> : 빠른 검색, 적은 값',
+    '<b>빨리</b> : 빠른 검색, 적은 값',
     '<b>보통</b> : 기본 검색, 보통 값',
-    '<b>다양</b> : 느린 검색, 많은 값']
+    '<b>꼼꼼</b> : 느린 검색, 많은 값']
   var selectorarr2 = [
     '<br><b>기본</b> : 점수대로 정렬',
     '<br><b>다양</b> : 뒷부분 중복 제거']
