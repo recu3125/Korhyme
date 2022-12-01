@@ -126,8 +126,8 @@ function selectorchange() {
 }
 function selectorchange2() {
   var selectorarr = [
-    '<br><b>기본</b> : 점수대로 정렬',
-    '<br><b>다양</b> : 뒷부분 중복 제거']
+    '<b>기본</b> : 점수대로 정렬',
+    '<b>다양</b> : 뒷부분 중복 제거']
   document.getElementById('selectorlabel2').innerHTML = selectorarr[document.getElementById('selector2').value]
 }
 function initinput() {
@@ -137,8 +137,8 @@ function initinput() {
     '<b>꼼꼼</b> : 느린 검색, 많은 값',
     '<b>명사</b> : 명사만 검색 (베타)']
   var selectorarr2 = [
-    '<br><b>기본</b> : 점수대로 정렬',
-    '<br><b>다양</b> : 뒷부분 중복 제거']
+    '<b>기본</b> : 점수대로 정렬',
+    '<b>다양</b> : 뒷부분 중복 제거']
   document.getElementById("input").value = getParameter("key")
   document.getElementById("min").value = Math.floor(getParameter("minmax") / 10)
   document.getElementById("max").value = getParameter("minmax") % 10
