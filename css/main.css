@@ -193,9 +193,11 @@ hr {
 }
 
 .selectorlabel {
+  line-height: 10px;
   font-size: 22px;
   margin-top: 15px;
   text-align: right;
+  display:inline-block;
   color: #FFFFFF;
 }
 
