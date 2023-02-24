@@ -399,7 +399,7 @@ function relevance1(a, b) {
   var same = ['ㅙㅚㅞ', 'ㅔㅐ']
   var similar = ['ㅏㅘ', 'ㅓㅝㅗ', 'ㅕㅛ', 'ㅜㅡ', 'ㅣㅟㅢ', 'ㅐㅔㅙㅞㅚ', 'ㅒㅖ']
   if (arebothin(a, b, same)) return 40;
-  else if (arebothin(a, b, similar)) return 35;
+  else if (arebothin(a, b, similar)) return 39;
   else return 0;
 }
 
