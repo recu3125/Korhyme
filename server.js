@@ -3,8 +3,6 @@ var express = require('express')
 var app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
-const { resolve } = require('path');
-var timecheck = 0
 var file = [[[], []], [[], []], [[], []], [[], []]]
 // nginx용 8080 포트로 서버 오픈
 var port = 8080

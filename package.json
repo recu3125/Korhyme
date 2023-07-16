@@ -2,7 +2,6 @@
   "name": "koreanrhyme",
   "version": "1.0.0",
   "main": "server.js",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/recu3125/KoreanRhyme.git"
@@ -16,7 +15,6 @@
   "description": "",
   "dependencies": {
     "express": "^4.17.2",
-    "file-system": "^2.2.2",
     "hangul-js": "^0.2.6"
   },
   "engines": {
