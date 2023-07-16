@@ -3,10 +3,22 @@ var express = require('express')
 var app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
+const { resolve } = require('path');
 var timecheck = 0
 var file = [[[], []], [[], []], [[], []], [[], []]]
 // nginx용 8080 포트로 서버 오픈
 var port = 8080
+
+app.use((req, res, next) => {
+  res.setTimeout(20000, () => {
+    console.log('Request has timed out.');
+    res.send(408)
+    console.error('response timeout');
+    process.exit(1)
+  });
+  next();
+});
+
 app.listen(port, async function () {
   console.log("start at " + port)
   getfile(0).then(arr => {
@@ -72,7 +84,7 @@ app.get('/sitemap', (req, res) => {
 })
 
 var sel
-app.get('/process/:key/:sel/:sel2/:from/:min/:max', (req, res) => {
+app.get('/process/:key/:sel/:sel2/:from/:min/:max', async (req, res) => {
   var key = req.params.key
   sel = Number(req.params.sel)
   var sel2 = Number(req.params.sel2)
@@ -80,7 +92,7 @@ app.get('/process/:key/:sel/:sel2/:from/:min/:max', (req, res) => {
   var minlen = Number(req.params.min)
   var maxlen = Number(req.params.max)
   var start = +new Date()
-  res.send(processf(key, sel2, from, minlen, maxlen))
+  res.send(await processf(key, sel2, from, minlen, maxlen))
   var end = +new Date()
   console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
 })
@@ -90,20 +102,19 @@ app.use('/sicon', express.static(__dirname + '/icon'));
 app.use('/sfonts', express.static(__dirname + '/fonts'));
 app.use('/scss', express.static(__dirname + '/css'));
 
-function processf(key, sel2, from, minlen, maxlen) {
+async function processf(key, sel2, from, minlen, maxlen) {
   if (key == '') {
     location.href = '/'
     return '0';
   }
   var input = key
   var inputlen = input.length
-  var tosearch = stdpron(input)
+  var tosearch = await stdpron(input)
   if (minlen < 2 || maxlen > 6) {
     minlen = 2
     maxlen = 6
   }
-  var scores = search(tosearch, minlen, maxlen)
-
+  var scores = await search(tosearch, minlen, maxlen)
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
   // var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
@@ -135,7 +146,7 @@ function processf(key, sel2, from, minlen, maxlen) {
     orderresult[sortcount[scores[i]]] = i
   }
 
-  if (sel2==1) {
+  if (sel2 == 1) {// 다양옵션
     outlen = 0
     alreadythere = []
     for (var i = 0; outlen < from + 200; i++) {
@@ -143,7 +154,7 @@ function processf(key, sel2, from, minlen, maxlen) {
 
       isalreadythere = false
       allen = alreadythere.length
-      for (j=0;j<allen;j++) {
+      for (j = 0; j < allen; j++) {
         if (word.slice(-2) == alreadythere[j]) {
           isalreadythere = true
           break
@@ -156,7 +167,7 @@ function processf(key, sel2, from, minlen, maxlen) {
       }
     }
   }
-  else {
+  else {//기본옵션
     for (var i = from; i < from + 200; i++) {
       var word = ('' + words[orderresult[i]])
       outputlist.push([word, scores[orderresult[i]]])
@@ -315,74 +326,89 @@ function stdpron(a) {
 
 function search(keyword, minlen, maxlen) {
   var memoization = [] //한글자당 값 기억용 배열(짱큼)
-  var wordslist = file[sel][0]
-  var pronslist = file[sel][1]
-  var scores = []
-  var len = pronslist.length
+  const wordslist = file[sel][0]
+  const pronslist = file[sel][1]
   var ao = keyword.split('L')
-  var aleno = ao.length
-  for (var i = 0; i < len; i++) { //단어 vs 단어 비교
-    if (wordslist[i].length < minlen || wordslist[i].length > maxlen) {
-      scores.push(0)
-      continue;
-    }
-    var a = ao //입력 단어 발음
-    var alen = aleno //길이
-    var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
-    var blen = b.length //길이
+  var aleno = ao.length;
+  //for (var i = 0; i < len; i++) { //단어 vs 단어 비교
+  //1000개씩묶고 setimmediate
+  const batchSize = 10000;
+  const len = wordslist.length;
+  const scores = [];
 
-    if (alen < blen) {
-      b = b.slice(-alen)
-      blen = alen
+  function processBatch(startIndex, resolve) {
+    const endIndex = Math.min(startIndex + batchSize, len);
+    for (let i = startIndex; i < endIndex; i++) {
+      if (wordslist[i].length < minlen || wordslist[i].length > maxlen) {
+        scores.push(0)
+        continue
+      }
+      var a = ao //입력 단어 발음
+      var alen = aleno //길이
+      var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
+      var blen = b.length //길이
+
+      if (alen < blen) {
+        b = b.slice(-alen)
+        blen = alen
+      } else {
+        a = a.slice(-blen)
+        alen = blen
+      }
+      //마지막에 alen개 자름
+      var score = 0
+      var asplit
+      var bsplit
+      var chojongchain = 0
+      for (var j = 0; j < alen; j++) { //글자 vs 글자 비교
+        var befasplit = asplit
+        var befbsplit = bsplit
+        asplit = [a[j][0], a[j][2], a[j][4]] //초,중,종성
+        bsplit = [b[j][0], b[j][2], b[j][4]]
+        var force0 = 0 //무조건 같게
+        var force2 = 0 //무조건 같게
+        if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
+        {
+          force2 = 1
+          chojongchain = 0
+        }
+        if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ' ||
+          j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ') // 이번 초성이 이전 종성이랑 연결
+        {
+          force0 = 1
+          chojongchain = 1
+        }
+        //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
+        chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
+        //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
+        if (memoization[chartocode] != undefined) //있으면 불러오기
+        {
+          score += memoization[chartocode]
+        }
+        else //아니니까 계산
+        {
+          var tempscore = 0
+          tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
+          tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
+          var rel2 = relevance2(asplit[2], bsplit[2], force2)
+          tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
+          score += tempscore
+          memoization[chartocode] = tempscore
+        }
+      }
+      score = Math.round(Math.max(score, 0) / aleno * 4)
+      scores.push(score)
+    }
+
+    if (endIndex < len) {
+      setImmediate(() => processBatch(endIndex, resolve));
     } else {
-      a = a.slice(-blen)
-      alen = blen
+      resolve(scores);
     }
-    //마지막에 alen개 자름
-    var score = 0
-    var asplit
-    var bsplit
-    var chojongchain = 0
-    for (var j = 0; j < alen; j++) { //글자 vs 글자 비교
-      var befasplit = asplit
-      var befbsplit = bsplit
-      asplit = [a[j][0], a[j][2], a[j][4]] //초,중,종성
-      bsplit = [b[j][0], b[j][2], b[j][4]]
-      var force0 = 0 //무조건 같게
-      var force2 = 0 //무조건 같게
-      if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
-      {
-        force2 = 1
-        chojongchain = 0
-      }
-      if (j > 0 && befasplit[2] == 'E' && asplit[0] == 'ㅇ' ||
-        j > 0 && befbsplit[2] == 'E' && bsplit[0] == 'ㅇ') // 이번 초성이 이전 종성이랑 연결
-      {
-        force0 = 1
-        chojongchain = 1
-      }
-      //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
-      chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
-      //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
-      if (memoization[chartocode] != undefined) //있으면 불러오기
-      {
-        score += memoization[chartocode]
-      }
-      else //아니니까 계산
-      {
-        var tempscore = 0
-        tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
-        tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
-        var rel2 = relevance2(asplit[2], bsplit[2], force2)
-        tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
-        score += tempscore
-        memoization[chartocode] = tempscore
-      }
-    }
-    score = Math.round(Math.max(score, 0) / aleno * 4)
-    scores.push(score)
   }
-  return scores
+  return new Promise((resolve, reject) => {
+    processBatch(0, resolve)
+  })
 }
 function relevance0(a, b, force) {
   if (force == 1 && a != b) return -10000; //이러면 아예 제외해버린다..?

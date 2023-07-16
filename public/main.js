@@ -155,19 +155,26 @@ async function refillres(from) {
   if (key == '') {
     location.href = '/'
   }
-  await $.ajax({
-    url: `/process/${key}/${getParameter("sel")}/${getParameter("sel2")}/${from}/${Math.floor(getParameter("minmax") / 10)}/${getParameter("minmax") % 10}`,
-    type: "GET",
-    success: function (result) {
-      if (result) {
-        JSON.parse(result).map(a => resultlist.push(a))
-        isloading = 0
-      }
-      else {
-        alert("불러오기 실패");
-      }
+  try {
+    const response = await fetch(`/process/${key}/${getParameter("sel")}/${getParameter("sel2")}/${from}/${Math.floor(getParameter("minmax") / 10)}/${getParameter("minmax") % 10}`, {
+      method: "GET"
+    });
+    if (response.ok) {
+      const result = await response.json();
+      result.map(a => resultlist.push(a))
+      isloading = 0
+    } else {
+      alert("불러오기 실패");
     }
-  });
+  } catch (error) {
+    document.body.innerHTML = `뭔가 문제가 생겼어요!<br>
+    서버가 자동으로 재시작 중일 테니<br>
+    눈감구 1부터 10까지 센다음 재접속해보는건 어떨까요<br>
+    <br>
+    그래도 뭔가 잘 안되면... 뭔가 문제가 몇개 더 생겼나 봐요<br>
+    개발자가 열심히 고치고 잇겠거니 생각하면서 응원해주세요`
+    throw new Error('response 408')
+  }
 }
 
 var checkinterval
