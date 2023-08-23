@@ -1,11 +1,11 @@
-var express = require('express')
+let express = require('express')
 // express 는 함수이므로, 반환값을 변수에 저장한다.
-var app = express()
+let app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
-var file = [[[], []], [[], []], [[], []], [[], []]]
+let file = [[[], []], [[], []], [[], []], [[], []]]
 // nginx용 8080 포트로 서버 오픈
-var port = 8080
+let port = 8080
 
 app.use((req, res, next) => {
   res.setTimeout(20000, () => {
@@ -81,17 +81,17 @@ app.get('/sitemap', (req, res) => {
   res.sendFile(__dirname + "/sitemap.xml")
 })
 
-var sel
+let sel
 app.get('/process/:key/:sel/:sel2/:from/:min/:max', async (req, res) => {
-  var key = req.params.key
+  let key = req.params.key
   sel = Number(req.params.sel)
-  var sel2 = Number(req.params.sel2)
-  var from = Number(req.params.from)
-  var minlen = Number(req.params.min)
-  var maxlen = Number(req.params.max)
-  var start = +new Date()
+  let sel2 = Number(req.params.sel2)
+  let from = Number(req.params.from)
+  let minlen = Number(req.params.min)
+  let maxlen = Number(req.params.max)
+  let start = +new Date()
   res.send(await processf(key, sel2, from, minlen, maxlen))
-  var end = +new Date()
+  let end = +new Date()
   console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
 })
 
@@ -105,41 +105,41 @@ async function processf(key, sel2, from, minlen, maxlen) {
     location.href = '/'
     return '0';
   }
-  var input = key
-  var inputlen = input.length
-  var tosearch = await stdpron(input)
+  let input = key
+  let inputlen = input.length
+  let tosearch = await stdpron(input)
   if (minlen < 2 || maxlen > 6) {
     minlen = 2
     maxlen = 6
   }
-  var scores = await search(tosearch, minlen, maxlen)
+  let scores = await search(tosearch, minlen, maxlen)
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
-  // var result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
-  // var words = file[sel][0]
-  // var outputlist = [
+  // let result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
+  // let words = file[sel][0]
+  // let outputlist = [
   //   ['' + words[result[from]], Math.round(scores[result[from]] * 4)]
   // ]
-  // for (var i = from + 1; i < from + 200; i++) {
-  //   var word = ('' + words[result[i]])
+  // for (let i = from + 1; i < from + 200; i++) {
+  //   let word = ('' + words[result[i]])
   //   outputlist.push([word, Math.round(scores[result[i]] * 4)])
   // }
 
   //카운팅 소트(역순)
-  var len = scores.length
-  var maxvalue = 300
-  var sortcount = Array(maxvalue).fill(0)
-  var orderresult = []
-  var words = file[sel][0]
+  let len = scores.length
+  let maxvalue = 300
+  let sortcount = Array(maxvalue).fill(0)
+  let orderresult = []
+  let words = file[sel][0]
   outputlist = []
-  for (var i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     sortcount[scores[i]] += 1//점수별 나온 개수
   }
-  for (var i = maxvalue - 2; i >= 0; i--) //역순
+  for (let i = maxvalue - 2; i >= 0; i--) //역순
   {
     sortcount[i] += sortcount[i + 1]//다더해서 위치
   }
-  for (var i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     sortcount[scores[i]] -= 1
     orderresult[sortcount[scores[i]]] = i
   }
@@ -147,8 +147,8 @@ async function processf(key, sel2, from, minlen, maxlen) {
   if (sel2 == 1) {// 다양옵션
     outlen = 0
     alreadythere = []
-    for (var i = 0; outlen < from + 200; i++) {
-      var word = ('' + words[orderresult[i]])
+    for (let i = 0; outlen < from + 200; i++) {
+      let word = ('' + words[orderresult[i]])
 
       isalreadythere = false
       allen = alreadythere.length
@@ -166,8 +166,8 @@ async function processf(key, sel2, from, minlen, maxlen) {
     }
   }
   else {//기본옵션
-    for (var i = from; i < from + 200; i++) {
-      var word = ('' + words[orderresult[i]])
+    for (let i = from; i < from + 200; i++) {
+      let word = ('' + words[orderresult[i]])
       outputlist.push([word, scores[orderresult[i]]])
     }
   }
@@ -180,7 +180,7 @@ function korformatter(commonkor) {
   //가나다
   commonkor = commonkor.replace(/ ?/g, 'L').replace(/^\L+|\L+$/g, '').trim()
   //가L나L다
-  var disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
+  let disassemed = betterDisassemble(commonkor).replace(/ ?/g, ' ').replace(/^\L+|\L+$/g, '').trim()
   disassemed = disassemed.replace(/ㅗ ㅏ/g, 'ㅘ')
     .replace(/ㅗ ㅐ/g, 'ㅙ')
     .replace(/ㅗ ㅣ/g, 'ㅚ')
@@ -200,7 +200,7 @@ function korformatter(commonkor) {
     .replace(/ㄹ ㅎ/g, 'ㅀ')
     .replace(/ㅂ ㅅ/g, 'ㅄ')
     .split('L')
-  for (var i = 0, len = disassemed.length; i < len; i++) {
+  for (let i = 0, len = disassemed.length; i < len; i++) {
     disassemed[i] = disassemed[i].replace(/^\L+|\L+$/g, '').trim()
     if (disassemed[i].length == 3) {
       disassemed[i] = disassemed[i] + ' E'
@@ -211,22 +211,22 @@ function korformatter(commonkor) {
 }
 
 function betterDisassemble(input) {
-  var inlen = input.length
-  var out = ''
+  let inlen = input.length
+  let out = ''
   if (inlen <= 10) {
     return Hangul.disassemble(input).join('')
   }
-  for (var i = 0; i < inlen - 10; i += 10) {
-    var sub = Hangul.disassemble(input.substring(i, i + 10)).join('')
+  for (let i = 0; i < inlen - 10; i += 10) {
+    let sub = Hangul.disassemble(input.substring(i, i + 10)).join('')
     out += sub
   }
-  var fin = Hangul.disassemble(input.substring(Math.floor(inlen / 10) * 10, inlen)).join('')
+  let fin = Hangul.disassemble(input.substring(Math.floor(inlen / 10) * 10, inlen)).join('')
   out += fin
   return out
 }
 
 function stdpron(a) {
-  var a = korformatter(a)
+  a = korformatter(a)
   //모음 한단어에 하나로
   a = a.replace(/ㅑ/g, 'ㅣ ELㅇ ㅏ')
     .replace(/ㅕ/g, 'ㅣ ELㅇ ㅓ')
@@ -323,12 +323,12 @@ function stdpron(a) {
 
 
 function search(keyword, minlen, maxlen) {
-  var memoization = [] //한글자당 값 기억용 배열(짱큼)
+  let memoization = [] //한글자당 값 기억용 배열(짱큼)
   const wordslist = file[sel][0]
   const pronslist = file[sel][1]
-  var ao = keyword.split('L')
-  var aleno = ao.length;
-  //for (var i = 0; i < len; i++) { //단어 vs 단어 비교
+  let ao = keyword.split('L')
+  let aleno = ao.length;
+  //for (let i = 0; i < len; i++) { //단어 vs 단어 비교
   //1000개씩묶고 setimmediate
   const batchSize = 10000;
   const len = wordslist.length;
@@ -341,10 +341,10 @@ function search(keyword, minlen, maxlen) {
         scores.push(0)
         continue
       }
-      var a = ao //입력 단어 발음
-      var alen = aleno //길이
-      var b = (pronslist[i] || '').split('L') // 비교할 단어 발음
-      var blen = b.length //길이
+      let a = ao //입력 단어 발음
+      let alen = aleno //길이
+      let b = (pronslist[i] || '').split('L') // 비교할 단어 발음
+      let blen = b.length //길이
 
       if (alen < blen) {
         b = b.slice(-alen)
@@ -354,17 +354,17 @@ function search(keyword, minlen, maxlen) {
         alen = blen
       }
       //마지막에 alen개 자름
-      var score = 0
-      var asplit
-      var bsplit
-      var chojongchain = 0
-      for (var j = 0; j < alen; j++) { //글자 vs 글자 비교
-        var befasplit = asplit
-        var befbsplit = bsplit
+      let score = 0
+      let asplit
+      let bsplit
+      let chojongchain = 0
+      for (let j = 0; j < alen; j++) { //글자 vs 글자 비교
+        let befasplit = asplit
+        let befbsplit = bsplit
         asplit = [a[j][0], a[j][2], a[j][4]] //초,중,종성
         bsplit = [b[j][0], b[j][2], b[j][4]]
-        var force0 = 0 //무조건 같게
-        var force2 = 0 //무조건 같게
+        let force0 = 0 //무조건 같게
+        let force2 = 0 //무조건 같게
         if (chojongchain) //입력단어에서 이번 종성이 다음 초성이랑 연결 ex) 안이이면 
         {
           force2 = 1
@@ -385,10 +385,10 @@ function search(keyword, minlen, maxlen) {
         }
         else //아니니까 계산
         {
-          var tempscore = 0
+          let tempscore = 0
           tempscore += relevance0(asplit[0], bsplit[0], force0) * (j == (alen - 1) ? 1.5 : 1)
           tempscore += relevance1(asplit[1], bsplit[1]) * (j == (alen - 1) ? 1.5 : 1) //마지막글자면 1.5배
-          var rel2 = relevance2(asplit[2], bsplit[2], force2)
+          let rel2 = relevance2(asplit[2], bsplit[2], force2)
           tempscore += rel2 * (j == (alen - 1) ? rel2 >= 2 ? 10 : 1.5 : 1) // 마지막글잔데 받침 똑같으면 10배나?? 해놨네
           score += tempscore
           memoization[chartocode] = tempscore
@@ -411,8 +411,8 @@ function search(keyword, minlen, maxlen) {
 function relevance0(a, b, force) {
   if (force == 1 && a != b) return -10000; //이러면 아예 제외해버린다..?
   if (a == b) return 5;
-  var similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㅇㅎ']
-  var ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㄴㄹㅁ']
+  let similar = ['ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅈㅉㅊ', 'ㅅㅆ', 'ㅇㅎ']
+  let ssimilar = ['ㄱㄲㅋㄷㄸㅌㅂㅃㅍ', 'ㅈㅉㅊㅅㅆ', 'ㄴㄹㅁ']
   if (arebothin(a, b, similar)) return 3;
   if (arebothin(a, b, ssimilar)) return 1;
   else return 0;
@@ -420,8 +420,8 @@ function relevance0(a, b, force) {
 
 function relevance1(a, b) {
   if (a == b) return 40;
-  var same = ['ㅙㅚㅞ', 'ㅔㅐ']
-  var similar = ['ㅏㅘ', 'ㅓㅝㅗ', 'ㅕㅛ', 'ㅜㅡ', 'ㅣㅟㅢ', 'ㅐㅔㅙㅞㅚ', 'ㅒㅖ']
+  let same = ['ㅙㅚㅞ', 'ㅔㅐ']
+  let similar = ['ㅏㅘ', 'ㅓㅝㅗ', 'ㅕㅛ', 'ㅜㅡ', 'ㅣㅟㅢ', 'ㅐㅔㅙㅞㅚ', 'ㅒㅖ']
   if (arebothin(a, b, same)) return 40;
   else if (arebothin(a, b, similar)) return 39;
   else return 0;
@@ -431,16 +431,16 @@ function relevance2(a, b, force) {
   if (force == 1 && a != b) return -10000;
   if (a == 'E' && b == 'E') return 3;
   if (a == b) return 2;
-  var same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
-  var similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄻㅁㅇ']
+  let same = ['ㄲㅋㄳㄺㄱ', 'ㄵㄴㄶ', 'ㅅㅆㅈㅌㅍㄷ', 'ㄼㄽㄾㄹㅀ', 'ㄻㅁ', 'ㅍㅄㄿㅂ', 'ㅇ']
+  let similar = ['ㄲㅋㄳㄺㄱㅅㅆㅈㅌㅍㄷㅍㅄㄿㅂ', 'ㄵㄴㄶㄻㅁㅇ']
   if (arebothin(a, b, same)) return 2;
   else if (arebothin(a, b, similar)) return 1;
   else return 0;
 }
 
 function arebothin(a, b, arr) {
-  for (var i = 0, bothinlen = arr.length; i < bothinlen; i++) {
-    var element = arr[i]
+  for (let i = 0, bothinlen = arr.length; i < bothinlen; i++) {
+    let element = arr[i]
     if (element.includes(a) && element.includes(b))
       return 1;
   }
@@ -448,8 +448,8 @@ function arebothin(a, b, arr) {
 }
 
 async function getfile(num) {
-  var numtopath = [__dirname + '/data/lyrics.txt', __dirname + '/data/news.txt', __dirname + '/data/dict.txt']
-  var a = [],
+  let numtopath = [__dirname + '/data/lyrics.txt', __dirname + '/data/news.txt', __dirname + '/data/dict.txt']
+  let a = [],
     b = []
   return new Promise(resolve => {
     fs.readFile(numtopath[num], 'utf8', (err, result) => {
@@ -459,9 +459,9 @@ async function getfile(num) {
       }
       while (result.indexOf("\r") >= 0)
         result = result.replace(/\r/g, "");
-      var arrLines = result.split("\n");
-      for (var j of arrLines) {
-        var splitted = j.split('\t')
+      let arrLines = result.split("\n");
+      for (let j of arrLines) {
+        let splitted = j.split('\t')
         a.push(splitted[0])
         b.push(splitted[1])
       }
