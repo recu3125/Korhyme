@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 
 app.listen(port, async function () {
   console.log("start at " + port)
-  getfile(0).then(arr => {
+  await getfile(0).then(arr => {
     arr[0].map(a => { // 단어
       file[0][0].push(a)
       file[1][0].push(a)
@@ -31,7 +31,7 @@ app.listen(port, async function () {
       file[2][1].push(a)
     })
   })
-  getfile(1).then(arr => {
+  await getfile(1).then(arr => {
     arr[0].map(a => { // 단어
       file[1][0].push(a)
       file[2][0].push(a)
@@ -41,7 +41,7 @@ app.listen(port, async function () {
       file[2][1].push(a)
     })
   })
-  getfile(2).then(arr => {
+  await getfile(2).then(arr => {
     arr[0].map(a => { // 단어
       file[2][0].push(a)
       file[3][0].push(a)
@@ -50,8 +50,13 @@ app.listen(port, async function () {
       file[2][1].push(a)
       file[3][1].push(a)
     })
-    console.log('data loaded')
   })
+  for (let i = 0; i <= 3; i++) {
+    for (let j = 0, len = file[i][1].length; j < len; j++) {
+      file[i][1][j] = file[i][1][j].split('L')
+    }
+  }
+  console.log('data loaded')
 })
 
 app.get('/', function (req, res) {
@@ -343,7 +348,7 @@ function search(keyword, minlen, maxlen) {
       }
       let a = ao //입력 단어 발음
       let alen = aleno //길이
-      let b = (pronslist[i] || '').split('L') // 비교할 단어 발음
+      let b = pronslist[i] // 비교할 단어 발음
       let blen = b.length //길이
 
       if (alen < blen) {
