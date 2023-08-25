@@ -122,7 +122,7 @@ async function processf(key, sel2, from, minlen, maxlen) {
       words = file[0][0].concat(file[1][0],file[2][0])
       break;
     case 3:
-      words = file[0][2]
+      words = file[2][0]
       break;
   }
   outputlist = []
