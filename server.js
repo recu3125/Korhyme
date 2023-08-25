@@ -3,7 +3,7 @@ let express = require('express')
 let app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
-let file = [[[], []], [[], []], [[], []], [[], []]]
+let file = [,,]
 // nginx용 8080 포트로 서버 오픈
 let port = 8080
 
@@ -19,39 +19,10 @@ app.use((req, res, next) => {
 
 app.listen(port, async function () {
   console.log("start at " + port)
-  await getfile(0).then(arr => {
-    arr[0].map(a => { // 단어
-      file[0][0].push(a)
-      file[1][0].push(a)
-      file[2][0].push(a)
-    })
-    arr[1].map(a => { // 발음
-      file[0][1].push(a)
-      file[1][1].push(a)
-      file[2][1].push(a)
-    })
-  })
-  await getfile(1).then(arr => {
-    arr[0].map(a => { // 단어
-      file[1][0].push(a)
-      file[2][0].push(a)
-    })
-    arr[1].map(a => { // 발음
-      file[1][1].push(a)
-      file[2][1].push(a)
-    })
-  })
-  await getfile(2).then(arr => {
-    arr[0].map(a => { // 단어
-      file[2][0].push(a)
-      file[3][0].push(a)
-    })
-    arr[1].map(a => { // 발음
-      file[2][1].push(a)
-      file[3][1].push(a)
-    })
-  })
-  for (let i = 0; i <= 3; i++) {
+  file[0] = await getfile(0)
+  file[1] = await getfile(1)
+  file[2] = await getfile(2)
+  for (let i = 0; i <= 2; i++) {
     for (let j = 0, len = file[i][1].length; j < len; j++) {
       file[i][1][j] = file[i][1][j].split('L')
     }
@@ -135,7 +106,25 @@ async function processf(key, sel2, from, minlen, maxlen) {
   let maxvalue = 300
   let sortcount = Array(maxvalue).fill(0)
   let orderresult = []
-  let words = file[sel][0]
+  let words
+  // const wordstojoin = [[0],[0,1],[0,1,2],[2]]
+  // for (i=0;i<wordstojoin[sel].length;i++){
+  //   words = words.concat(file[wordstojoin[sel][i]][0])
+  // }
+  switch(sel){
+    case 0:
+      words = file[0][0]
+      break;
+    case 1:
+      words = file[0][0].concat(file[1][0])
+      break;
+    case 2:
+      words = file[0][0].concat(file[1][0],file[2][0])
+      break;
+    case 3:
+      words = file[0][2]
+      break;
+  }
   outputlist = []
   for (let i = 0; i < len; i++) {
     sortcount[scores[i]] += 1//점수별 나온 개수
@@ -329,8 +318,37 @@ function stdpron(a) {
 
 function search(keyword, minlen, maxlen) {
   let memoization = [] //한글자당 값 기억용 배열(짱큼)
-  const wordslist = file[sel][0]
-  const pronslist = file[sel][1]
+  let wordslist
+  let pronslist
+
+  // const wordstojoin = [[0],[0,1],[0,1,2],[2]]
+  // for (i=0;i<wordstojoin[sel].length;i++){
+  //   wordslist = wordslist.concat(file[wordstojoin[sel][i]][0])
+  // }
+  // for (i=0;i<wordstojoin[sel].length;i++){
+  //   pronslist = pronslist.concat(file[wordstojoin[sel][i]][1])
+  // }
+
+  
+  switch(sel){
+    case 0:
+      wordslist = file[0][0]
+      pronslist = file[0][1]
+      break;
+    case 1:
+      wordslist = file[0][0].concat(file[1][0])
+      pronslist = file[0][1].concat(file[1][1])
+      break;
+    case 2:
+      wordslist = file[0][0].concat(file[1][0],file[2][0])
+      pronslist = file[0][1].concat(file[1][1],file[2][1])
+      break;
+    case 3:
+      wordslist = file[2][0]
+      pronslist = file[2][1]
+      break;
+  }
+
   let ao = keyword.split('L')
   let aleno = ao.length;
   //for (let i = 0; i < len; i++) { //단어 vs 단어 비교
