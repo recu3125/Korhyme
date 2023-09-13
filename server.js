@@ -14,6 +14,10 @@ app.use((req, res, next) => {
     console.error('response timeout');
     process.exit(1)
   });
+  let host = req.get('Host')
+  if (host === 'korhyme.ml') {
+    return res.redirect(301, 'https://korhyme.recu3125.com');
+  }
   next();
 });
 
