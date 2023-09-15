@@ -1,5 +1,4 @@
 let express = require('express')
-// express 는 함수이므로, 반환값을 변수에 저장한다.
 let app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
@@ -129,7 +128,7 @@ async function processf(key, sel2, from, minlen, maxlen) {
       words = file[2][0]
       break;
   }
-  outputlist = []
+  let outputlist = []
   for (let i = 0; i < len; i++) {
     sortcount[scores[i]] += 1//점수별 나온 개수
   }
@@ -143,14 +142,14 @@ async function processf(key, sel2, from, minlen, maxlen) {
   }
 
   if (sel2 == 1) {// 다양옵션
-    outlen = 0
-    alreadythere = []
+    let outlen = 0
+    let alreadythere = []
     for (let i = 0; outlen < from + 200; i++) {
       let word = ('' + words[orderresult[i]])
 
-      isalreadythere = false
-      allen = alreadythere.length
-      for (j = 0; j < allen; j++) {
+      let isalreadythere = false
+      const allen = alreadythere.length
+      for (let j = 0; j < allen; j++) {
         if (word.slice(-2) == alreadythere[j]) {
           isalreadythere = true
           break
@@ -404,7 +403,7 @@ function search(keyword, minlen, maxlen) {
           chojongchain = 1
         }
         //b(데이터베이스)글자와 a(입력)의몇번째글자인지 포함된 메모리용 식별번호
-        chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
+        const chartocode = ((force0 * 2) + force2) * 270000000 + (alen - j) * 27000000 + (bsplit[0] == undefined ? 299 : bsplit[0].charCodeAt(0) - 'ㄱ'.charCodeAt(0)) * 90000 + (bsplit[1] == undefined ? 299 : bsplit[1].charCodeAt(0) - 'ㅏ'.charCodeAt(0)) * 300 + (bsplit[2] == undefined ? 298 : bsplit[2] == 'E' ? 299 : bsplit[2].charCodeAt(0) - 'ㄱ'.charCodeAt(0))
         //console.log(`${bsplit[0]}, ${bsplit[1]}, ${bsplit[2]}, ${bsplit[0]==undefined ? 999 : bsplit[0].charCodeAt(0)-'ㄱ'.charCodeAt(0)} , ${bsplit[1]==undefined ? 999 : bsplit[1].charCodeAt(0)-'ㅏ'.charCodeAt(0)}, ${bsplit[2]==undefined ? 998 : bsplit[2]=='E' ? 999 : bsplit[2].charCodeAt(0)-'ㄱ'.charCodeAt(0)}, ${chartocode}`)
         let memnow = memoization[chartocode]
         if (memnow != undefined) //있으면 불러오기
