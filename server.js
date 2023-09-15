@@ -2,17 +2,17 @@ let express = require('express')
 let app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
-let file = [,,]
+let file = [, ,]
 // nginx용 8080 포트로 서버 오픈
 let port = 8080
 
 app.use((req, res, next) => {
-  res.setTimeout(20000, () => {
-    console.log('Request has timed out.');
-    res.send(408)
-    console.error('response timeout');
-    process.exit(1)
-  });
+  // res.setTimeout(20000, () => {
+  //   console.log('Request has timed out.');
+  //   res.send(408)
+  //   console.error('response timeout');
+  //   process.exit(1)
+  // });
   let host = req.get('Host')
   if (host === 'korhyme.ml') {
     return res.redirect(301, 'https://korhyme.recu3125.com');
@@ -60,16 +60,15 @@ app.get('/sitemap', (req, res) => {
   res.sendFile(__dirname + "/sitemap.xml")
 })
 
-let sel
 app.get('/process/:key/:sel/:sel2/:from/:min/:max', async (req, res) => {
   let key = req.params.key
-  sel = Number(req.params.sel)
+  let sel = Number(req.params.sel)
   let sel2 = Number(req.params.sel2)
   let from = Number(req.params.from)
   let minlen = Number(req.params.min)
   let maxlen = Number(req.params.max)
   let start = +new Date()
-  res.send(await processf(key, sel2, from, minlen, maxlen))
+  res.send(await processf(key, sel, sel2, from, minlen, maxlen))
   let end = +new Date()
   console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
 })
@@ -79,7 +78,7 @@ app.use('/sicon', express.static(__dirname + '/icon'));
 app.use('/sfonts', express.static(__dirname + '/fonts'));
 app.use('/scss', express.static(__dirname + '/css'));
 
-async function processf(key, sel2, from, minlen, maxlen) {
+async function processf(key, sel, sel2, from, minlen, maxlen) {
   if (key == '') {
     location.href = '/'
     return '0';
@@ -91,7 +90,7 @@ async function processf(key, sel2, from, minlen, maxlen) {
     minlen = 2
     maxlen = 6
   }
-  let scores = await search(tosearch, minlen, maxlen)
+  let scores = await search(tosearch, sel, minlen, maxlen)
   // sort로 값으로 역순 정렬후 그순서대로 from부터 from+200까지 앞에서부터 잘라줌
 
   // let result = Object.entries(scores).sort((a, b) => a[1] - b[1]).map(e => e[0]).reverse()
@@ -114,7 +113,7 @@ async function processf(key, sel2, from, minlen, maxlen) {
   // for (i=0;i<wordstojoin[sel].length;i++){
   //   words = words.concat(file[wordstojoin[sel][i]][0])
   // }
-  switch(sel){
+  switch (sel) {
     case 0:
       words = file[0][0]
       break;
@@ -122,7 +121,7 @@ async function processf(key, sel2, from, minlen, maxlen) {
       words = file[0][0].concat(file[1][0])
       break;
     case 2:
-      words = file[0][0].concat(file[1][0],file[2][0])
+      words = file[0][0].concat(file[1][0], file[2][0])
       break;
     case 3:
       words = file[2][0]
@@ -319,7 +318,7 @@ function stdpron(a) {
 }
 
 
-function search(keyword, minlen, maxlen) {
+function search(keyword, sel, minlen, maxlen) {
   let memoization = [] //한글자당 값 기억용 배열(짱큼)
   let wordslist
   let pronslist
@@ -332,8 +331,8 @@ function search(keyword, minlen, maxlen) {
   //   pronslist = pronslist.concat(file[wordstojoin[sel][i]][1])
   // }
 
-  
-  switch(sel){
+
+  switch (sel) {
     case 0:
       wordslist = file[0][0]
       pronslist = file[0][1]
@@ -343,8 +342,8 @@ function search(keyword, minlen, maxlen) {
       pronslist = file[0][1].concat(file[1][1])
       break;
     case 2:
-      wordslist = file[0][0].concat(file[1][0],file[2][0])
-      pronslist = file[0][1].concat(file[1][1],file[2][1])
+      wordslist = file[0][0].concat(file[1][0], file[2][0])
+      pronslist = file[0][1].concat(file[1][1], file[2][1])
       break;
     case 3:
       wordslist = file[2][0]
