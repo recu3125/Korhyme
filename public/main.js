@@ -304,7 +304,7 @@ function databasemaker(filename) {
 }
 
 function init() {
-  new SmoothScroll(document, 120, 12)
+  new SmoothScroll(document, 100, 5)
   setInterval(minchange, 100);
   setInterval(maxchange, 100);
 }
