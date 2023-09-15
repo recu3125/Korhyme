@@ -1,10 +1,10 @@
-let express = require('express')
-let app = express()
+const express = require('express')
+const app = express()
 const fs = require('fs')
 const Hangul = require('hangul-js');
-let file = [, ,]
 // nginx용 8080 포트로 서버 오픈
-let port = 8080
+const port = 8080
+let file = [, ,]
 
 app.use((req, res, next) => {
   // res.setTimeout(20000, () => {
