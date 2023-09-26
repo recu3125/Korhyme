@@ -60,18 +60,31 @@ app.get('/sitemap', (req, res) => {
   res.sendFile(__dirname + "/sitemap.xml")
 })
 
+let processQueue = []
+let isprocessing = false
 app.get('/process/:key/:sel/:sel2/:from/:min/:max', async (req, res) => {
+  let waitstart = new Date()
+  processQueue.push({ req, res, waitstart })
+  if (!isprocessing) {
+    isprocessing = true
+    runProcessQueue()
+  }
+})
+async function runProcessQueue() {
+  if (processQueue.length == 0) { isprocessing = false; return }
+  const { req, res, waitstart } = processQueue.shift()
   let key = req.params.key
   let sel = Number(req.params.sel)
   let sel2 = Number(req.params.sel2)
   let from = Number(req.params.from)
   let minlen = Number(req.params.min)
   let maxlen = Number(req.params.max)
-  let start = +new Date()
+  let start = new Date()
   res.send(await processf(key, sel, sel2, from, minlen, maxlen))
-  let end = +new Date()
-  console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
-})
+  let end = new Date()
+  console.log(`sended result to client : key:${key}, sel:${sel}, sel2:${sel2}, from:${from}, minmax:${minlen}-${maxlen}, processtime:${end - start} ms, waittime:${start - waitstart} ms, waiting:${processQueue.length}, time:${new Date().toLocaleString("en-US", { timeZone: "Asia/Seoul" }).toString()}`)
+  runProcessQueue()
+}
 
 app.use('/spublic', express.static(__dirname + '/public'));
 app.use('/sicon', express.static(__dirname + '/icon'));
